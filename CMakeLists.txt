@@ -7,11 +7,14 @@ set(OptiX_ROOT_DIR "C:/ProgramData/NVIDIA Corporation/OptiX SDK 7.6.0")
 add_definitions(-DNDEBUG)
 
 set(SOURCE_FILES
+        "config.cuh"
         "main.cu"
         "display.cuh"
         "display.cu"
         "rt_setup.cuh"
         "rt_setup.cu")
+
+add_subdirectory(scene)
 
 add_executable(DemoRealTimeLighting ${SOURCE_FILES})
 
