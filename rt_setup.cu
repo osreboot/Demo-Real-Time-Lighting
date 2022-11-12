@@ -1,8 +1,11 @@
-#define CAMERA_COS_FOVY 0.66f
+#define CAMERA_COS_FOVY 0.9f // was 0.66f
 #define CAMERA_LOOK_UP vec3f{0.0f, 1.0f, 0.0f}
 
 #include <owl/owl.h>
 #include <vector>
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb/stb_image_write.h"
 
 #include "config.cuh"
 #include "display.cuh"
@@ -76,8 +79,8 @@ void rt_setup::initialize(){
 void rt_setup::update(float delta){
     timer += delta / 2.0f;
 
-    vec3f camera_pos = SCENE_LIST[SCENE_INDEX]->getCameraLocation(timer);
-    vec3f camera_d00 = normalize(SCENE_LIST[SCENE_INDEX]->getCameraTarget(timer) - camera_pos);
+    vec3f camera_pos = SCENE_LIST[SCENE_INDEX]->getCameraDynamicLocation(timer);
+    vec3f camera_d00 = normalize(SCENE_LIST[SCENE_INDEX]->getCameraDynamicTarget(timer) - camera_pos);
     float aspect = float(display::getSize().x) / float(display::getSize().y);
     vec3f camera_ddu = CAMERA_COS_FOVY * aspect * normalize(cross(camera_d00,CAMERA_LOOK_UP));
     vec3f camera_ddv = CAMERA_COS_FOVY * normalize(cross(camera_ddu,camera_d00));
@@ -93,4 +96,30 @@ void rt_setup::update(float delta){
 
     owlBuildSBT(context);
     owlRayGenLaunch2D(rayGen, display::getSize().x, display::getSize().y);
+}
+
+void rt_setup::capture(){
+    vec3f camera_pos = SCENE_LIST[SCENE_INDEX]->getCameraStaticLocation();
+    vec3f camera_d00 = normalize(SCENE_LIST[SCENE_INDEX]->getCameraStaticTarget() - camera_pos);
+    float aspect = float(display::getSize().x) / float(display::getSize().y);
+    vec3f camera_ddu = CAMERA_COS_FOVY * aspect * normalize(cross(camera_d00,CAMERA_LOOK_UP));
+    vec3f camera_ddv = CAMERA_COS_FOVY * normalize(cross(camera_ddu,camera_d00));
+    camera_d00 -= 0.5f * camera_ddu;
+    camera_d00 -= 0.5f * camera_ddv;
+
+    owlRayGenSet1ul(rayGen, "frameBuffer", (uint64_t)display::getFrameBuffer());
+    owlRayGenSet2i(rayGen, "size", display::getSize().x, display::getSize().y);
+    owlRayGenSet3f(rayGen, "camera.pos", (const owl3f&)camera_pos);
+    owlRayGenSet3f(rayGen, "camera.dir_00", (const owl3f&)camera_d00);
+    owlRayGenSet3f(rayGen, "camera.dir_du", (const owl3f&)camera_ddu);
+    owlRayGenSet3f(rayGen, "camera.dir_dv", (const owl3f&)camera_ddv);
+
+    owlBuildSBT(context);
+    owlRayGenLaunch2D(rayGen, display::getSize().x, display::getSize().y);
+
+    uint32_t* frameBuffer = display::getFrameBuffer();
+
+    stbi_flip_vertically_on_write(true);
+    stbi_write_png("capture.png", display::getSize().x, display::getSize().y, 4, frameBuffer, display::getSize().x * sizeof(uint32_t));
+
 }

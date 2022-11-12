@@ -42,7 +42,7 @@ inline float random(){
     return dist(gen);
 }
 
-void addBox(const SceneBuildParams &params, vec3f boxSize, vec3f boxLocation, float rotation, Material material){
+inline void addBox(const SceneBuildParams &params, vec3f boxSize, vec3f boxLocation, float rotation, Material material){
     affine3f xfm(linear3f::scale(boxSize));
     xfm = affine3f(linear3f::rotate(vec3f(0.0f, 1.0f, 0.0f), ((float)M_PI / 180.0f) * rotation)) * xfm;
     xfm = affine3f(affine3f::translate(boxLocation)) * xfm;
@@ -61,7 +61,9 @@ class Scene{
 
 public:
     virtual void initialize(const SceneBuildParams &params) const {}
-    virtual vec3f getCameraLocation(const float timer) const { return vec3f(0.0f); }
-    virtual vec3f getCameraTarget(const float timer) const { return vec3f(0.0f); }
+    virtual vec3f getCameraDynamicLocation(const float timer) const { return vec3f(0.0f); }
+    virtual vec3f getCameraDynamicTarget(const float timer) const { return vec3f(0.0f); }
+    virtual vec3f getCameraStaticLocation() const { return vec3f(0.0f); }
+    virtual vec3f getCameraStaticTarget() const { return vec3f(0.0f); }
 
 };

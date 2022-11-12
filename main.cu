@@ -1,6 +1,7 @@
 #include <chrono>
 #include <glfw/glfw3.h>
 
+#include "config.cuh"
 #include "display.cuh"
 #include "rt_setup.cuh"
 
@@ -12,6 +13,7 @@ int main(){
     display::initialize(1280, 720, "Test");
     rt_setup::initialize();
 
+    bool captured = false;
     timeLastUpdate = chrono::high_resolution_clock::now();
 
     while(!display::exiting()){
@@ -21,7 +23,12 @@ int main(){
 
         display::preUpdate();
 
-        rt_setup::update(delta);
+        if(PROGRAM_MODE_DYNAMIC){
+            rt_setup::update(delta);
+        }else if(!captured){
+            captured = true;
+            rt_setup::capture();
+        }
 
         display::postUpdate();
     }

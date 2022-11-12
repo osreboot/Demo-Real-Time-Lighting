@@ -39,4 +39,5 @@ struct PerRayData{
     vec3f hitOrigin;
     vec3f bounceDirection;
     vec3f color;
+    float lastRefractiveIndex;
 };

@@ -39,12 +39,12 @@ private:
 
 public:
     void initialize(const SceneBuildParams &params) const override {
-        addBox(params, {7.0f, 0.05f, 7.0f}, {0.0f, -0.1f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY);
+        addBox(params, {9.0f, 0.05f, 7.0f}, {0.0f, -0.1f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY);
 
-        addBox(params, {7.0f, 3.0f, 0.05f}, {0.0f, 3.0f, 7.05f}, 0.0f, MAT_CHROME);
-        addBox(params, {7.0f, 3.0f, 0.05f}, {0.0f, 3.0f, -7.05f}, 0.0f, MAT_CHROME);
-        addBox(params, {0.05f, 3.0f, 7.0f}, {7.05f, 3.0f, 0.0f}, 0.0f, MAT_CHROME);
-        addBox(params, {0.05f, 3.0f, 7.0f}, {-7.05f, 3.0f, 0.0f}, 0.0f, MAT_CHROME);
+        addBox(params, {9.0f, 3.0f, 0.05f}, {0.0f, 3.0f, 7.05f}, 0.0f, MAT_CHROME);
+        addBox(params, {9.0f, 3.0f, 0.05f}, {0.0f, 3.0f, -7.05f}, 0.0f, MAT_CHROME);
+        addBox(params, {0.05f, 3.0f, 7.0f}, {9.05f, 3.0f, 0.0f}, 0.0f, MAT_CHROME);
+        addBox(params, {0.05f, 3.0f, 7.0f}, {-9.05f, 3.0f, 0.0f}, 0.0f, MAT_CHROME);
 
         for(float x = -1.0f; x <= 1.0f; x += 1.0f){
             for(float z = -1.0f; z <= 1.0f; z += 1.0f){
@@ -60,12 +60,20 @@ public:
         addBox(params, {1.0f, 1.0f, 1.0f}, {0.0f, 5.0f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY);
     }
 
-    vec3f getCameraLocation(const float timer) const override {
+    vec3f getCameraDynamicLocation(const float timer) const override {
         return {sin(timer) * 6.0f, 2.0f, cos(timer) * 6.0f};
     }
 
-    vec3f getCameraTarget(const float timer) const override {
+    vec3f getCameraDynamicTarget(const float timer) const override {
         return {0.0f, sin(timer) + 1.0f, 0.0f};
+    }
+
+    vec3f getCameraStaticLocation() const override {
+        return {-7.9f, 2.0f, -3.5f};
+    }
+
+    vec3f getCameraStaticTarget() const override {
+        return {0.0f, 1.0f, 0.0f};
     }
 
 };

@@ -8,6 +8,7 @@ add_definitions(-DNDEBUG)
 
 set(SOURCE_FILES
         "config.cuh"
+        "config.cu"
         "main.cu"
         "display.cuh"
         "display.cu"

@@ -15,6 +15,7 @@ inline __device__ vec3f randomUnitSphere(LCG<4> &random){
 
 inline __device__ vec3f tracePath(const RayGenData &self, Ray &ray, PerRayData &prd){
     vec3f attenuation = vec3f(1.0f);
+    prd.lastRefractiveIndex = 1.0f;
     for(int i = 0; i < 50; i++){
         prd.hitDetected = false;
 
@@ -89,16 +90,18 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
     vec3f v = normalize(rd);
     float cosine;
 
+    float refractiveIndexRelative = material.refractiveIndex/* / prd.lastRefractiveIndex*/;
+
     vec3f outward_normal;
     float ni;
     if(dot(v, hitNormal) > 0.0f){
         outward_normal = -hitNormal;
-        ni = material.refractiveIndex;
+        ni = refractiveIndexRelative;
         cosine = dot(v, hitNormal);
-        cosine = sqrtf(1.0f - material.refractiveIndex * material.refractiveIndex * (1.0f - cosine * cosine));
+        cosine = sqrtf(1.0f - refractiveIndexRelative * refractiveIndexRelative * (1.0f - cosine * cosine));
     }else{
         outward_normal = hitNormal;
-        ni = 1.0f / material.refractiveIndex;
+        ni = 1.0f / refractiveIndexRelative;
         cosine = -dot(v, hitNormal);
     }
 
@@ -116,7 +119,7 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
         pReflect = 1.0f;
     }else{
         // Schlick algorithm
-        float r0 = (1.0f - material.refractiveIndex) / (1.0f + material.refractiveIndex);
+        float r0 = (1.0f - refractiveIndexRelative) / (1.0f + refractiveIndexRelative);
         r0 = r0 * r0;
         pReflect = r0 + (1.0f - r0) * powf(1.0f - cosine, 5.0f);
     }
@@ -131,6 +134,7 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
 
     prd.color = material.color;
     prd.hitDetected = !material.fullbright;
+    prd.lastRefractiveIndex = material.refractiveIndex;
 }
 
 OPTIX_MISS_PROGRAM(miss)(){
@@ -143,6 +147,9 @@ OPTIX_MISS_PROGRAM(miss)(){
     switch(SCENE_SKYBOX){
         case SCENE_SKYBOX_BLACK:
             prd.color = vec3f(0.0f);
+            break;
+        case SCENE_SKYBOX_WHITE:
+            prd.color = vec3f(min(1.0f, 1.0f + rdn.y));
             break;
         case SCENE_SKYBOX_RGB:
             prd.color = (1.0f + rdn) / 2.0f;

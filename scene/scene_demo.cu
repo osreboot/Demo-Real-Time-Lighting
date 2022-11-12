@@ -61,11 +61,19 @@ public:
         addBox(params, vec3f(1.0f, 0.05f, 1.0f), vec3f(-3.0f, 2.0f, 3.0f), 45.0f, MAT_LIGHT_BLUE);
     }
 
-    vec3f getCameraLocation(const float timer) const override {
+    vec3f getCameraDynamicLocation(const float timer) const override {
         return vec3f(sin(timer) * 10.0f, 4.0f, cos(timer) * 10.0f);
     }
 
-    vec3f getCameraTarget(const float timer) const override {
+    vec3f getCameraDynamicTarget(const float timer) const override {
+        return vec3f(0.0f);
+    }
+
+    vec3f getCameraStaticLocation() const override {
+        return vec3f(sin(1.0f) * 10.0f, 4.0f, cos(1.0f) * 10.0f);
+    }
+
+    vec3f getCameraStaticTarget() const override {
         return vec3f(0.0f);
     }
 
