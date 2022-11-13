@@ -3,6 +3,8 @@
 #include <owl/owl.h>
 #include <owl/common/math/random.h>
 
+#define NESTED_MATERIALS_MAX 50
+
 using namespace owl;
 
 struct Material{
@@ -39,5 +41,6 @@ struct PerRayData{
     vec3f hitOrigin;
     vec3f bounceDirection;
     vec3f color;
-    float lastRefractiveIndex;
+    int sizeMaterials;
+    Material materials[NESTED_MATERIALS_MAX];
 };

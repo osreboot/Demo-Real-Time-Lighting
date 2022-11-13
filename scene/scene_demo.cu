@@ -5,17 +5,17 @@
 class SceneDemo : public Scene{
 
 private:
-    const Material MAT_BASE1 = {false, 0.0f, 0.0f, 0.5f, 0.02f, {0.4f, 0.4f, 0.4f}};
-    const Material MAT_BASE2 = {false, 0.0f, 0.0f, 0.5f, 0.2f, {0.8f, 0.8f, 0.8f}};
-    const Material MAT_CHROME = {false, 0.0f, 0.0f, 1.0f, 0.01f, {0.95f, 0.95f, 0.95f}};
-    const Material MAT_BLUE = {false, 0.0f, 0.0f, 0.5f, 0.01f, {0.4f, 0.4f, 0.8f}};
+    const Material MAT_BASE1 = {false, 0.0f, 1.0f, 0.5f, 0.02f, {0.4f, 0.4f, 0.4f}};
+    const Material MAT_BASE2 = {false, 0.0f, 1.0f, 0.5f, 0.2f, {0.8f, 0.8f, 0.8f}};
+    const Material MAT_CHROME = {false, 0.0f, 1.0f, 1.0f, 0.01f, {0.95f, 0.95f, 0.95f}};
+    const Material MAT_BLUE = {false, 0.0f, 1.0f, 0.5f, 0.01f, {0.4f, 0.4f, 0.8f}};
     const Material MAT_BLUE_GLASS = {false, 0.5f, 1.33f, 0.5f, 0.0f, {0.4f, 0.4f, 0.8f}};
     const Material MAT_GLASS1 = {false, 0.6f, 1.5f, 0.5f, 0.0f, {0.4f, 0.8f, 0.4f}};
     const Material MAT_GLASS2 = {false, 0.99f, 1.05f, 0.1f, 0.0f, {1.0f, 1.0f, 1.0f}};
-    const Material MAT_FLAT1 = {false, 0.0f, 0.0f, 1.0f, 0.5f, {0.5f, 0.5f, 0.0f}};
-    const Material MAT_FLAT2 = {false, 0.0f, 0.0f, 0.1f, 0.0f, {0.0f, 0.5f, 0.0f}};
-    const Material MAT_LIGHT = {true, 0.0f, 0.0f, 0.0f, 0.0f, {1.0f, 1.0f, 1.0f}};
-    const Material MAT_LIGHT_BLUE = {true, 0.0f, 0.0f, 0.0f, 0.0f, {0.0f, 0.0f, 1.0f}};
+    const Material MAT_FLAT1 = {false, 0.0f, 1.0f, 1.0f, 0.5f, {0.5f, 0.5f, 0.0f}};
+    const Material MAT_FLAT2 = {false, 0.0f, 1.0f, 0.1f, 0.0f, {0.0f, 0.5f, 0.0f}};
+    const Material MAT_LIGHT = {true, 0.0f, 1.0f, 0.0f, 0.0f, {1.0f, 1.0f, 1.0f}};
+    const Material MAT_LIGHT_BLUE = {true, 0.0f, 1.0f, 0.0f, 0.0f, {0.0f, 0.0f, 1.0f}};
 
 public:
     void initialize(const SceneBuildParams &params) const override {

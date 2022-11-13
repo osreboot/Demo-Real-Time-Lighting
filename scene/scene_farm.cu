@@ -6,21 +6,21 @@ private:
     const float SIZE_FARM_BLOCK = 0.5f;
     const float SIZE_FARM_BLOCK2 = SIZE_FARM_BLOCK * 0.3f;
 
-    const Material MAT_CHROME = {false, 0.0f, 0.0f, 1.0f, 0.01f, {0.95f, 0.95f, 0.95f}};
-    const Material MAT_LIGHT_PRIMARY = {true, 0.0f, 0.0f, 0.0f, 0.0f, {1.0f, 1.0f, 1.0f}};
+    const Material MAT_CHROME = {false, 0.0f, 1.0f, 1.0f, 0.01f, {0.95f, 0.95f, 0.95f}};
+    const Material MAT_LIGHT_PRIMARY = {true, 0.0f, 1.0f, 0.0f, 0.0f, {1.0f, 1.0f, 1.0f}};
 
     Material getMaterial(vec2f location, bool fullbright) const {
         if(location.y > cos(location.x) + location.x / 2.0f + 3.0f){
-            return {fullbright, 0.0f, 0.0f, 1.0f, 0.1f, {1.0f, 0.5f, 0.5f}};
+            return {fullbright, 0.0f, 1.0f, 1.0f, 0.1f, {1.0f, 0.5f, 0.5f}};
         }else if(location.y > cos(location.x + 1.5f) * 2.0f + 3.0f){
-            return {fullbright, 0.0f, 0.0f, 1.0f, 0.02f, {0.5f, 0.5f, 1.0f}};
+            return {fullbright, 0.0f, 1.0f, 1.0f, 0.02f, {0.5f, 0.5f, 1.0f}};
         }else if(location.y > cos(location.x * 0.5f)){
-            return {fullbright, 0.0f, 0.0f, 1.0f, 0.0f, {1.0f, 0.5f, 1.0f}};
+            return {fullbright, 0.0f, 1.0f, 1.0f, 0.0f, {1.0f, 0.5f, 1.0f}};
         }else if(location.y > cos(location.x * 0.5f) - location.x / 4.0f - 2.0f){
-            return {fullbright, 0.0f, 0.0f, 0.0f, 0.0f, {0.5f, 1.0f, 1.0f}};
+            return {fullbright, 0.0f, 1.0f, 0.0f, 0.0f, {0.5f, 1.0f, 1.0f}};
         }else if(location.y > cos(location.x) * 1.5f - 4.0f){
-            return {fullbright, 0.0f, 0.0f, 0.5f, 0.0f, {0.5f, 1.0f, 0.5f}};
-        }else return {fullbright, 0.0f, 0.0f, 1.0f, 0.0f, {1.0f, 1.0f, 0.5f}};
+            return {fullbright, 0.0f, 1.0f, 0.5f, 0.0f, {0.5f, 1.0f, 0.5f}};
+        }else return {fullbright, 0.0f, 1.0f, 1.0f, 0.0f, {1.0f, 1.0f, 0.5f}};
     }
 
     void addFarm(const SceneBuildParams &params, vec3f location) const {
