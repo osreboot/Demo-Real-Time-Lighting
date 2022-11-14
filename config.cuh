@@ -7,11 +7,22 @@
 #define SCENE_SKYBOX_RGB 2
 #define SCENE_SKYBOX_UNDERLIT 3
 
-#define SCENE_INDEX 3
+// Select the current scene and skybox
+#define SCENE_INDEX 2
 #define SCENE_SKYBOX SCENE_SKYBOX_WHITE
 
 extern const Scene* SCENE_LIST[];
 
-#define PROGRAM_MODE_DYNAMIC 1
+// 0 = render scene to png, 1 = render scene in real-time
+#define PROGRAM_MODE_DYNAMIC 0
 
-#define PROGRAM_SAMPLES 20
+// Number of raycasts per pixel
+#define PROGRAM_SAMPLES 2000
+
+// Disable specific shader features for demonstration purposes
+#define SHADER_SKYBOX_DIRECTIONAL 1
+#define SHADER_SCATTERING 1
+#define SHADER_LAMBERTIAN_REFLECTION 1
+#define SHADER_REFRACTION 1
+#define SHADER_SCHLICK_REFLECTION 1
+#define SHADER_FULLBRIGHT_MATERIALS 1

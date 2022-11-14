@@ -21,8 +21,6 @@ inline __device__ vec3f tracePath(const RayGenData &self, Ray &ray, PerRayData &
 
         traceRay(self.world, ray, prd);
 
-        if(prd.hitCancelled) return vec3f(0.0f);
-
         attenuation *= prd.color;
 
         if(!prd.hitDetected) return attenuation;
@@ -81,11 +79,16 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
 
     // Calculate reflected direction
     vec3f directionReflect = rd - 2.0f * dot(rd, normalSurface) * normalSurface;
+#if SHADER_LAMBERTIAN_REFLECTION
     if(prd.random() > material.reflectivity){
+#if SHADER_SCATTERING
         directionReflect = normalSurface + randomUnitSphere(prd.random);
+#else
+        directionReflect = normalSurface;
+#endif
     }
+#endif
 
-    // Calculate refracted direction
     const bool leavingObject = dot(rdn, normalSurface) > 0.0f;
 
     const Material materialAir = {false, 1.0f, 1.0f, 0.0f, 0.0f, vec3f(1.0f)};
@@ -105,37 +108,26 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
 
     vec3f normalSurfaceOutwards = leavingObject ? -normalSurface : normalSurface;
 
-    /*
-    float cosine;
-    if(leavingObject){
-        cosine = dot(rdn, normalSurface);
-        cosine = sqrtf(1.0f - refractiveIndexRelative * refractiveIndexRelative * (1.0f - cosine * cosine));
-    }else{
-        cosine = -dot(rdn, normalSurface);
-    }
-
-    // Begin refraction code
-    float dt = dot(rdn, normalSurfaceOutwards);
-    float disc = 1.0f - refractiveIndexRelative * refractiveIndexRelative * (1.0f - dt * dt);
-
-    vec3f directionRefract = rd;
-    if(disc > 0.0f){
-        directionRefract = refractiveIndexRelative * (rdn - normalSurfaceOutwards * dt) - normalSurfaceOutwards * sqrtf(disc);
-    }
-    // End refraction code
-     */
-
-    float cosine = min(dot(-rdn, normalSurfaceOutwards), 1.0f);
-    vec3f rOutPerp = refractiveIndexRelative * (rdn + cosine * normalSurfaceOutwards);
+    // Algorithm source: https://raytracing.github.io/books/RayTracingInOneWeekend.html#dielectrics/refraction
+    float refractCosine = min(dot(-rdn, normalSurfaceOutwards), 1.0f);
+#if SHADER_REFRACTION
+    vec3f rOutPerp = refractiveIndexRelative * (rdn + refractCosine * normalSurfaceOutwards);
     vec3f rOutPara = -sqrtf(abs(1.0f - length(rOutPerp) * length(rOutPerp))) * normalSurfaceOutwards;
     vec3f directionRefract = rOutPerp + rOutPara;
+#else
+    vec3f directionRefract = rdn;
+#endif
 
     // Schlick algorithm
+#if SHADER_SCHLICK_REFLECTION
     float r0 = (materialLast.refractiveIndex - materialNext.refractiveIndex) / (materialLast.refractiveIndex + materialNext.refractiveIndex);
     r0 = r0 * r0;
-    float pReflectSchlick = r0 + (1.0f - r0) * powf(1.0f - cosine, 5.0f);
+    float pReflectSchlick = r0 + (1.0f - r0) * powf(1.0f - refractCosine, 5.0f);
+#else
+    float pReflectSchlick = 0.0f;
+#endif
 
-    if((/*disc > 0.0f && */prd.random() < materialNext.transparency && prd.random() > pReflectSchlick) || continuousObject){ // Refracted
+    if(continuousObject || (prd.random() < materialNext.transparency && prd.random() > pReflectSchlick)){ // Refracted
         if(leavingObject){
             if(prd.sizeMaterials > 0) prd.sizeMaterials--;
         }else{
@@ -144,18 +136,25 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
         prd.bounceDirection = directionRefract;
     }else prd.bounceDirection = directionReflect;
 
+#if SHADER_SCATTERING
     if(!continuousObject) prd.bounceDirection += material.diffuse * randomUnitSphere(prd.random);
+#endif
 
     prd.color = continuousObject ? vec3f(1.0f) : material.color;
+
+#if SHADER_FULLBRIGHT_MATERIALS
     prd.hitDetected = !material.fullbright;
+#else
+    prd.hitDetected = true;
+#endif
 }
 
 OPTIX_MISS_PROGRAM(miss)(){
     auto &prd = getPRD<PerRayData>();
 
     prd.hitDetected = false;
-    prd.hitCancelled = false;
 
+#if SHADER_SKYBOX_DIRECTIONAL
     vec3f rdn = normalize(vec3f(optixGetWorldRayDirection()));
     switch(SCENE_SKYBOX){
         case SCENE_SKYBOX_BLACK:
@@ -171,4 +170,7 @@ OPTIX_MISS_PROGRAM(miss)(){
             prd.color = 1.0f - max(rdn.y, 0.0f);
             break;
     }
+#else
+    prd.color = vec3f(1.0f);
+#endif
 }

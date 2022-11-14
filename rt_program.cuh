@@ -37,7 +37,7 @@ struct RayGenData{
 
 struct PerRayData{
     LCG<4> random;
-    bool hitDetected, hitCancelled;
+    bool hitDetected;
     vec3f hitOrigin;
     vec3f bounceDirection;
     vec3f color;
