@@ -10,7 +10,7 @@ using namespace std;
 chrono::high_resolution_clock::time_point timeLastUpdate;
 
 int main(){
-    display::initialize(1280, 720, "Test");
+    display::initialize(1280, 720, "Real-Time Lighting / Photoreal Demo - by Calvin Weaver");
     rt_setup::initialize();
 
     bool captured = false;

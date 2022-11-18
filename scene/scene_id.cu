@@ -15,7 +15,7 @@ public:
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 1.0f){
             for(float z = -5.0f; z <= 5.0f; z += 1.0f){
-                addBox(params, vec3f(0.5f), {x, -0.5f - 0.45f, z}, 0.0f, indexTile++ % 2 == 0 ? MAT_BASE1 : MAT_BASE2);
+                addBox(params, vec3f(0.5f), {x, -0.5f - 0.45f - 0.02f, z}, 0.0f, indexTile++ % 2 == 0 ? MAT_BASE1 : MAT_BASE2);
             }
         }
 
@@ -54,11 +54,11 @@ public:
     }
 
     vec3f getCameraStaticLocation() const override {
-        return vec3f(3.0f, 2.75f, 5.0f) * 1.2f;
+        return vec3f(3.0f + 0.7f, 2.75f - 0.1f, 5.0f) * 0.6f;
     }
 
     vec3f getCameraStaticTarget() const override {
-        return {0.0f, 0.0f, 0.0f};
+        return {0.7f, -0.1f, 0.0f};
     }
 
 };

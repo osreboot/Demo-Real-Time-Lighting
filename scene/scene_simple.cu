@@ -48,11 +48,11 @@ public:
     }
 
     vec3f getCameraStaticLocation() const override {
-        return vec3f(5.5f, 2.75f, -2.0f) * 1.2f;
+        return vec3f(5.5f, 2.0f, -2.0f) * 0.8f;
     }
 
     vec3f getCameraStaticTarget() const override {
-        return {0.0f, 0.0f, 0.0f};
+        return {0.0f, -0.5f, 0.0f};
     }
 
 };

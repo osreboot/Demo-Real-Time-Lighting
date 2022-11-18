@@ -70,7 +70,7 @@ public:
     }
 
     vec3f getCameraStaticLocation() const override {
-        return vec3f(sin(1.0f) * 10.0f, 4.0f, cos(1.0f) * 10.0f);
+        return vec3f(sin(1.0f) * 7.0f, 3.0f, cos(1.0f) * 7.0f);
     }
 
     vec3f getCameraStaticTarget() const override {
