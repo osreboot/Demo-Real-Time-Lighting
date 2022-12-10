@@ -32,7 +32,7 @@ The `scene` folder contains a number of scene definitions that, when selected in
   <img src="https://github.com/osreboot/Demo-Real-Time-Lighting/blob/main/examples/exampleSceneFarm.png" alt="Farm Scene">
 </p>
 
-*Composite* scene rendered at 20,000 samples per pixel.
+*Background* scene rendered at 20,000 samples per pixel.
 <p align="center">
-  <img src="https://github.com/osreboot/Demo-Real-Time-Lighting/blob/main/examples/exampleSceneComposite.png" alt="Composite Scene">
+  <img src="https://github.com/osreboot/Demo-Real-Time-Lighting/blob/main/examples/exampleSceneBackground.png" alt="Background Scene">
 </p>
