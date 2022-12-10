@@ -8,7 +8,7 @@
 #define SCENE_SKYBOX_UNDERLIT 3
 
 // Select the current scene and skybox
-#define SCENE_INDEX 5
+#define SCENE_INDEX 6
 #define SCENE_SKYBOX SCENE_SKYBOX_WHITE
 
 extern const Scene* SCENE_LIST[];

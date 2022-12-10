@@ -5,7 +5,7 @@
 
 using namespace owl;
 
-inline __device__ vec3f randomUnitSphere(LCG<4> &random){
+inline __device__ vec3f randomUnitSphere(LCG<4>& random){
     vec3f v;
     do{
         v = 2.0f * vec3f(random(), random(), random()) - vec3f(1.0f, 1.0f, 1.0f);
@@ -13,7 +13,7 @@ inline __device__ vec3f randomUnitSphere(LCG<4> &random){
     return v;
 }
 
-inline __device__ vec3f tracePath(const RayGenData &self, Ray &ray, PerRayData &prd){
+inline __device__ vec3f tracePath(const RayGenData& self, Ray& ray, PerRayData& prd){
     vec3f attenuation = vec3f(1.0f);
     prd.sizeMaterials = 0;
     for(int i = 0; i < 50; i++){
@@ -38,7 +38,7 @@ OPTIX_RAYGEN_PROGRAM(rayGenProgram)(){
     vec3f color = vec3f(0.0f);
     PerRayData prd;
 
-    for(float i = 0; i < PROGRAM_SAMPLES; i++){
+    for(int i = 0; i < PROGRAM_SAMPLES; i++){
         // Create ray from camera
         Ray ray;
         ray.origin = self.camera.pos;
