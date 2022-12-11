@@ -18,6 +18,8 @@ private:
     const Material MAT_LIGHT_BLUE = {true, 0.0f, 1.0f, 0.0f, 0.0f, {0.0f, 0.0f, 1.0f}};
 
 public:
+
+    // This scene was used to initially create the shader programs. It has a bit of everything!
     void initialize(const SceneBuildParams &params) const override {
         int indexTile = 0;
         for(float x = -10.0f; x <= 10.0f; x += 2.0f){

@@ -16,6 +16,8 @@ private:
     const Material MAT_CUBE6 = {true, 0.0f, 1.0f, 0.0f, 0.01f, {0.5f, 0.5f, 1.0f}};
 
 public:
+
+    // Creates a cube with interconnected sides of varying materials
     void initialize(const SceneBuildParams& params) const override {
         int indexTile = 0;
         for(float x = -2.0f; x <= 2.0f; x += 0.5f){

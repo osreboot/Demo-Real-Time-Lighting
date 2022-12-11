@@ -15,5 +15,6 @@ const SceneId sceneId;
 const SceneComposite sceneComposite;
 const SceneBackground sceneBackground;
 
+// List of available scenes
 const Scene* SCENE_LIST[] = {&sceneSimple, &sceneDemo, &sceneTutorial, &sceneFarm, &sceneId, &sceneComposite,
                              &sceneBackground};

@@ -16,11 +16,13 @@ private:
             {false, 0.0f, 1.0f, 0.0f, 0.0f, {0.0f, 0.6f, 0.0f}}, // LAMBERTIAN
             {false, 0.0f, 1.0f, 1.0f, 0.005f, {0.8f, 0.8f, 0.8f}}, // CHROME
             {false, 0.98f, 1.5f, 1.0f, 0.0f, {0.95f, 0.95f, 1.0f}}, // GLASS
-            {false, 0.9f, 1.04f, 1.0f, 0.1f, {0.95f, 1.0f, 1.0f}}, // FROSTED GLASS
+            {false, 0.9f, 1.04f, 1.0f, 0.2f, {0.9f, 0.9f, 0.9f}}, // FROSTED GLASS
             {false, 0.0f, 1.0f, 0.5f, 0.5f, {0.6f, 0.0f, 0.6f}}, // DIELECTRIC
     };
 
 public:
+
+    // Creates a cube with a bunch of interconnected side cubes and a cube at the core. Change the macro numbers to swap between different materials!
     void initialize(const SceneBuildParams& params) const override {
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 1.0f){

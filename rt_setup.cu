@@ -25,10 +25,13 @@ vector<Material> materials;
 
 float timer = 0.0f;
 
+// Called once at the start of main.cu
 void rt_setup::initialize(){
+    // Fetch scene data
     const Scene &scene = *SCENE_LIST[SCENE_INDEX];
     scene.initialize({&vertices, &indices, &materials});
 
+    // Initialize OWL data structures and parameters with our world geometry and materials
     context = owlContextCreate(nullptr, 1);
     OWLModule module = owlModuleCreate(context, rt_program_ptx);
 
@@ -72,13 +75,16 @@ void rt_setup::initialize(){
     rayGen = owlRayGenCreate(context, module, "rayGenProgram", sizeof(RayGenData), rayGenVars, -1);
     owlRayGenSetGroup(rayGen, "world", world);
 
+    // Build everything
     owlBuildPrograms(context);
     owlBuildPipeline(context);
 }
 
+// Called repeatedly in main.cu when running in dynamic mode
 void rt_setup::update(float delta){
     timer += delta / 2.0f;
 
+    // Calculate camera parameters
     vec3f camera_pos = SCENE_LIST[SCENE_INDEX]->getCameraDynamicLocation(timer);
     vec3f camera_d00 = normalize(SCENE_LIST[SCENE_INDEX]->getCameraDynamicTarget(timer) - camera_pos);
     float aspect = float(display::getSize().x) / float(display::getSize().y);
@@ -87,6 +93,7 @@ void rt_setup::update(float delta){
     camera_d00 -= 0.5f * camera_ddu;
     camera_d00 -= 0.5f * camera_ddv;
 
+    // Send camera parameters to the ray tracer
     owlRayGenSet1ul(rayGen, "frameBuffer", (uint64_t)display::getFrameBuffer());
     owlRayGenSet2i(rayGen, "size", display::getSize().x, display::getSize().y);
     owlRayGenSet3f(rayGen, "camera.pos", (const owl3f&)camera_pos);
@@ -94,11 +101,14 @@ void rt_setup::update(float delta){
     owlRayGenSet3f(rayGen, "camera.dir_du", (const owl3f&)camera_ddu);
     owlRayGenSet3f(rayGen, "camera.dir_dv", (const owl3f&)camera_ddv);
 
+    // Run ray tracer
     owlBuildSBT(context);
     owlRayGenLaunch2D(rayGen, display::getSize().x, display::getSize().y);
 }
 
+// Called once by main.cu when running in static mode
 void rt_setup::capture(){
+    // Calculate camera parameters
     vec3f camera_pos = SCENE_LIST[SCENE_INDEX]->getCameraStaticLocation();
     vec3f camera_d00 = normalize(SCENE_LIST[SCENE_INDEX]->getCameraStaticTarget() - camera_pos);
     float aspect = float(display::getSize().x) / float(display::getSize().y);
@@ -107,6 +117,7 @@ void rt_setup::capture(){
     camera_d00 -= 0.5f * camera_ddu;
     camera_d00 -= 0.5f * camera_ddv;
 
+    // Send camera parameters to the ray tracer
     owlRayGenSet1ul(rayGen, "frameBuffer", (uint64_t)display::getFrameBuffer());
     owlRayGenSet2i(rayGen, "size", display::getSize().x, display::getSize().y);
     owlRayGenSet3f(rayGen, "camera.pos", (const owl3f&)camera_pos);
@@ -114,12 +125,12 @@ void rt_setup::capture(){
     owlRayGenSet3f(rayGen, "camera.dir_du", (const owl3f&)camera_ddu);
     owlRayGenSet3f(rayGen, "camera.dir_dv", (const owl3f&)camera_ddv);
 
+    // Run ray tracer
     owlBuildSBT(context);
     owlRayGenLaunch2D(rayGen, display::getSize().x, display::getSize().y);
 
+    // Save output image data to a PNG using STB
     uint32_t* frameBuffer = display::getFrameBuffer();
-
     stbi_flip_vertically_on_write(true);
     stbi_write_png("capture.png", display::getSize().x, display::getSize().y, 4, frameBuffer, display::getSize().x * sizeof(uint32_t));
-
 }

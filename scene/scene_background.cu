@@ -3,8 +3,9 @@
 class SceneBackground : public Scene{
 
 private:
-    const float value1 = 0.9f;//0.7f;
-    const float value2 = 0.8f;//0.5f;
+    const float value1 = 0.95f;//0.7f;
+    const float value2 = 0.9f;//0.5f;
+    const bool close = false;
 
     const Material MAT_BASE1 = {false, 0.0f, 1.0f, 0.0f, 0.0f, vec3f(value1)};
     const Material MAT_BASE2 = {false, 0.0f, 1.0f, 0.0f, 0.0f, vec3f(value2)};
@@ -13,6 +14,8 @@ private:
     const Material MAT_GLASS2 = {false, 0.95f, 1.3f, 1.0f, 0.5f, {0.9f, 0.9f, 0.9f}};
 
 public:
+
+    // Creates a hallway with decorative lights on the walls and ceiling
     void initialize(const SceneBuildParams& params) const override {
         int indexTile = 0;
         for(float z = -2.0f; z <= 2.0f; z += 0.5f){
@@ -36,24 +39,24 @@ public:
         }
 
         addBox(params, vec3f(2.0f, 1.0f, 0.25f), {0.0f, 0.0f, 2.5f}, 0.0f, MAT_BASE1);
-        addBox(params, vec3f(2.0f, 0.1f, 2.0f), {0.0f, 0.85f + 0.25f, 0.0f}, 0.0f, MAT_LIGHT1);
-        addBox(params, vec3f(2.0f, 0.02f, 2.0f), {0.0f, 0.79f, 0.0f}, 0.0f, MAT_GLASS1);
+        addBox(params, vec3f(2.0f, 0.1f, 2.5f), {0.0f, 0.85f + 0.25f, 0.0f}, 0.0f, MAT_LIGHT1);
+        addBox(params, vec3f(2.0f, 0.02f, 2.5f), {0.0f, 0.79f, 0.0f}, 0.0f, MAT_GLASS1);
     }
 
     vec3f getCameraDynamicLocation(const float timer) const override {
-        return {sin(timer) * 2.5f, 1.7f, cos(timer) * 2.5f};
+        return getCameraStaticLocation(); // Not supported for this scene
     }
 
     vec3f getCameraDynamicTarget(const float timer) const override {
-        return {0.0f, -0.2f, 0.0f};
+        return getCameraStaticTarget(); // Not supported for this scene
     }
 
     vec3f getCameraStaticLocation() const override {
-        return vec3f(0.0f, 0.0f, -3.5f);
+        return vec3f(0.0f, 0.0f, close ? -0.25f : -3.5f);
     }
 
     vec3f getCameraStaticTarget() const override {
-        return {0.0f, 0.0f, 0.0f};
+        return {0.0f, 0.0f, close ? 5.0f : 0.0f};
     }
 
 };

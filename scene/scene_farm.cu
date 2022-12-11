@@ -9,6 +9,7 @@ private:
     const Material MAT_CHROME = {false, 0.0f, 1.0f, 1.0f, 0.01f, {0.95f, 0.95f, 0.95f}};
     const Material MAT_LIGHT_PRIMARY = {true, 0.0f, 1.0f, 0.0f, 0.0f, {1.0f, 1.0f, 1.0f}};
 
+    // Returns a material based on a cube's location in the scene
     Material getMaterial(vec2f location, bool fullbright) const {
         if(location.y > cos(location.x) + location.x / 2.0f + 3.0f){
             return {fullbright, 0.0f, 1.0f, 1.0f, 0.1f, {1.0f, 0.5f, 0.5f}};
@@ -23,6 +24,7 @@ private:
         }else return {fullbright, 0.0f, 1.0f, 1.0f, 0.0f, {1.0f, 1.0f, 0.5f}};
     }
 
+    // Creates a "farm" plot on the floor with a grid of cubes
     void addFarm(const SceneBuildParams &params, vec3f location) const {
         addBox(params, {SIZE_FARM_BLOCK * 3.5f, 0.05f, SIZE_FARM_BLOCK * 3.5f},
                {location.x, location.y - 0.02f, location.z}, 0.0f,
@@ -38,6 +40,8 @@ private:
     }
 
 public:
+
+    // This scene has a bunch of cube "farm" plots on the ground and reflective walls. Best used with a dark sky!
     void initialize(const SceneBuildParams &params) const override {
         addBox(params, {9.0f, 0.05f, 7.0f}, {0.0f, -0.1f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY);
 

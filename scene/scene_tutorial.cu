@@ -12,6 +12,7 @@ private:
     const Material MAT_CHROME = {false, 0.0f, 1.0f, 1.0f, 0.01f, {0.95f, 0.95f, 0.95f}};
 
 public:
+    // Demonstration scene that is as simple as possible (while still having each type of material).
     void initialize(const SceneBuildParams& params) const override {
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 0.5f){
@@ -27,11 +28,11 @@ public:
     }
 
     vec3f getCameraDynamicLocation(const float timer) const override {
-        return {sin(timer) * 6.0f, 2.5f, cos(timer) * 6.0f};
+        return vec3f(sin(timer) * 4.0f, 2.5f, cos(timer) * 4.0f) * 1.2f;
     }
 
     vec3f getCameraDynamicTarget(const float timer) const override {
-        return {0.0f, 0.0f, 0.0f};
+        return {0.0f, 0.4f, 0.0f};
     }
 
     vec3f getCameraStaticLocation() const override {

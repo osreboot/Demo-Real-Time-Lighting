@@ -36,12 +36,14 @@ struct SceneBuildParams{
     vector<Material> *materials;
 };
 
+// Easy uniform random number access
 inline float random(){
     static mt19937 gen(0);
     static uniform_real_distribution<float> dist(0.0f, 1.0f);
     return dist(gen);
 }
 
+// Creates a box in the scene
 inline void addBox(const SceneBuildParams &params, vec3f boxSize, vec3f boxLocation, float rotation, Material material){
     affine3f xfm(linear3f::scale(boxSize));
     xfm = affine3f(linear3f::rotate(vec3f(0.0f, 1.0f, 0.0f), ((float)M_PI / 180.0f) * rotation)) * xfm;

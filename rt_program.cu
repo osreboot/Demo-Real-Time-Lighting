@@ -5,6 +5,7 @@
 
 using namespace owl;
 
+// Selects a random point inside a unit sphere
 inline __device__ vec3f randomUnitSphere(LCG<4>& random){
     vec3f v;
     do{
@@ -13,40 +14,54 @@ inline __device__ vec3f randomUnitSphere(LCG<4>& random){
     return v;
 }
 
+// Tracks a ray through multiple bounces in the world
 inline __device__ vec3f tracePath(const RayGenData& self, Ray& ray, PerRayData& prd){
     vec3f attenuation = vec3f(1.0f);
     prd.sizeMaterials = 0;
+    // Loop as long as we haven't reached the maximum bounce depth
     for(int i = 0; i < 50; i++){
         prd.hitDetected = false;
 
+        // Launch the ray
         traceRay(self.world, ray, prd);
 
         attenuation *= prd.color;
 
         if(!prd.hitDetected) return attenuation;
 
+        // Re-initialize the ray based on collision parameters
         ray = Ray(prd.hitOrigin, prd.bounceDirection, 1e-3f, 1e10f);
     }
     return vec3f(0.0f);
 }
 
+// Ray generation program
 OPTIX_RAYGEN_PROGRAM(rayGenProgram)(){
     const auto &self = getProgramData<RayGenData>();
     const vec2i pixel = getLaunchIndex();
 
-    // Trace ray
     vec3f color = vec3f(0.0f);
     PerRayData prd;
 
+    // Cast rays to fulfill the number of required samples
     for(int i = 0; i < PROGRAM_SAMPLES; i++){
         // Create ray from camera
         Ray ray;
         ray.origin = self.camera.pos;
 
+        // Optional: link the ray's random seed to the pixel position. This is good for static images, but makes
+        // real-time renders look like there's dirt on the screen.
+        // prd.random.init(pixel.x + self.size.x * i,
+        //                 pixel.y + self.size.y * i);
+
+        // Set the ray's position and direction based on the current pixel
         const vec2f screen = (vec2f(pixel) + vec2f(prd.random(), prd.random()) + vec2f(0.5f)) / vec2f(self.size);
         ray.direction = normalize(self.camera.dir_00 + screen.u * self.camera.dir_du + screen.v * self.camera.dir_dv);
 
+        // Trace the ray's path
         vec3f colorOut = tracePath(self, ray, prd);
+
+        // Clamp the output color
         colorOut.x = max(min(colorOut.x, 1.0f), 0.0f);
         colorOut.y = max(min(colorOut.y, 1.0f), 0.0f);
         colorOut.z = max(min(colorOut.z, 1.0f), 0.0f);
@@ -56,18 +71,22 @@ OPTIX_RAYGEN_PROGRAM(rayGenProgram)(){
 
     // Assign frame buffer pixel color based on ray
     const int indexPixel = pixel.x + self.size.x * pixel.y;
+
+    // Average all samples
     self.frameBuffer[indexPixel] = make_rgba(color / (float)PROGRAM_SAMPLES);
 }
 
+// Ray hit program
 OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
     auto &prd = getPRD<PerRayData>();
     auto &self = getProgramData<TrianglesGeomData>();
 
-    // Calculate normalSurface
+    // Fetch data about the collision surface
     const unsigned int indexPrimitive = optixGetPrimitiveIndex();
     const vec3i index = self.index[indexPrimitive];
     Material& material = self.material[indexPrimitive / 12];
 
+    // Calculate the normal of the surface
     const vec3f normalSurface = normalize(cross(self.vertex[index.y] - self.vertex[index.x],
                                                 self.vertex[index.z] - self.vertex[index.x]));
 
@@ -75,12 +94,13 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
     const vec3f rd = optixGetWorldRayDirection();
     const vec3f rdn = normalize(rd);
 
+    // Calculate the position of the collision
     prd.hitOrigin = ro + optixGetRayTmax() * rd;
 
     // Calculate reflected direction
     vec3f directionReflect = rd - 2.0f * dot(rd, normalSurface) * normalSurface;
 #if SHADER_LAMBERTIAN_REFLECTION
-    if(prd.random() > material.reflectivity){
+    if(prd.random() > material.reflectivity){ // Scattering for lambertians
 #if SHADER_SCATTERING
         directionReflect = normalSurface + randomUnitSphere(prd.random);
 #else
@@ -89,10 +109,13 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
     }
 #endif
 
-    const bool leavingObject = dot(rdn, normalSurface) > 0.0f;
-
+    // Transparent objects looked REALLY ugly when multiple boxes of the same material were intersecting each other,
+    // so this code was added to ignore interior collisions of the same material (look up 3D modeling "boolean union"
+    // operation for more context on what exactly this does). Essentially, nested objects of the same material are
+    // now treated as one object without interior faces.
     const Material materialAir = {false, 1.0f, 1.0f, 0.0f, 0.0f, vec3f(1.0f)};
 
+    const bool leavingObject = dot(rdn, normalSurface) > 0.0f;
     Material materialLast = leavingObject ? material : (prd.sizeMaterials > 0 ? prd.materials[prd.sizeMaterials - 1] : materialAir);
     Material materialNext = leavingObject ? (prd.sizeMaterials > 1 ? prd.materials[prd.sizeMaterials - 2] : materialAir) : material;
 
@@ -104,6 +127,7 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
             materialLast.diffuse == materialNext.diffuse &&
             materialLast.color == materialNext.color;
 
+    // This refractive index is what actually matters, OWL's sample code doesn't cover this but it's more accurate.
     float refractiveIndexRelative = materialNext.refractiveIndex / materialLast.refractiveIndex;
 
     vec3f normalSurfaceOutwards = leavingObject ? -normalSurface : normalSurface;
@@ -118,7 +142,7 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
     vec3f directionRefract = rdn;
 #endif
 
-    // Schlick algorithm
+    // Schlick's approximation for transparent material reflections instead of refractions
 #if SHADER_SCHLICK_REFLECTION
     float r0 = (materialLast.refractiveIndex - materialNext.refractiveIndex) / (materialLast.refractiveIndex + materialNext.refractiveIndex);
     r0 = r0 * r0;
@@ -127,6 +151,7 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
     float pReflectSchlick = 0.0f;
 #endif
 
+    // Assign final ray data based on all the above calculations
     if(continuousObject || (prd.random() < materialNext.transparency && prd.random() > pReflectSchlick)){ // Refracted
         if(leavingObject){
             if(prd.sizeMaterials > 0) prd.sizeMaterials--;
@@ -136,6 +161,7 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
         prd.bounceDirection = directionRefract;
     }else prd.bounceDirection = directionReflect;
 
+    // Diffuse material scattering
 #if SHADER_SCATTERING
     if(!continuousObject) prd.bounceDirection += material.diffuse * randomUnitSphere(prd.random);
 #endif
@@ -149,6 +175,7 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
 #endif
 }
 
+// Ray miss program
 OPTIX_MISS_PROGRAM(miss)(){
     auto &prd = getPRD<PerRayData>();
 

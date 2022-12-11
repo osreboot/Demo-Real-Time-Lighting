@@ -11,6 +11,8 @@ private:
     const Material MAT_NUMBERS = {false, 0.0f, 1.0f, 1.0f, 0.005f, {0.8f, 0.8f, 0.8f}};
 
 public:
+
+    // This scene renders my (Calvin Weaver) student ID in big reflective letters with an interesting dual material tiled floor.
     void initialize(const SceneBuildParams& params) const override {
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 1.0f){
