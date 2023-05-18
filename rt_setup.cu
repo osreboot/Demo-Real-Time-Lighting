@@ -23,7 +23,7 @@ vector<vec3f> vertices;
 vector<vec3i> indices;
 vector<Material> materials;
 
-float timer = 0.0f;
+float timer = 0.0f, timerFreeze = 5.0f;
 
 // Called once at the start of main.cu
 void rt_setup::initialize(){
@@ -82,10 +82,12 @@ void rt_setup::initialize(){
 
 // Called repeatedly in main.cu when running in dynamic mode
 void rt_setup::update(float delta){
-    timer += delta / 2.0f;
+    if(timerFreeze > 0.0f) timerFreeze -= delta;
+    else timer += delta / (2.0f * 16.0f);
 
     // Calculate camera parameters
     vec3f camera_pos = SCENE_LIST[SCENE_INDEX]->getCameraDynamicLocation(timer);
+    if(timerFreeze > 0.0f) camera_pos += vec3f(0.0f, 10.0f, 0.0f);
     vec3f camera_d00 = normalize(SCENE_LIST[SCENE_INDEX]->getCameraDynamicTarget(timer) - camera_pos);
     float aspect = float(display::getSize().x) / float(display::getSize().y);
     vec3f camera_ddu = CAMERA_COS_FOVY * aspect * normalize(cross(camera_d00,CAMERA_LOOK_UP));

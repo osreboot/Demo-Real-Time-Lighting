@@ -21,8 +21,11 @@ void display::initialize(int widthArg, int heightArg, const char* titleArg){
     glfwInit();
     glfwDefaultWindowHints();
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    window = glfwCreateWindow(widthArg, heightArg, titleArg, NULL, NULL);
+    window = glfwCreateWindow(widthArg, heightArg, titleArg, glfwGetPrimaryMonitor(), NULL);
     glfwMakeContextCurrent(window);
+
+    // Hide the cursor
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     // Create the frame buffer and CUDA texture
     cudaMallocManaged(&frameBuffer, size.x * size.y * sizeof(uint32_t));
@@ -84,7 +87,7 @@ void display::postUpdate(){
 }
 
 bool display::exiting(){
-    return glfwWindowShouldClose(window);
+    return glfwWindowShouldClose(window) || glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
 }
 
 uint32_t* display::getFrameBuffer(){

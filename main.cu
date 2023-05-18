@@ -7,11 +7,11 @@
 
 using namespace std;
 
-chrono::high_resolution_clock::time_point timeLastUpdate;
+chrono::high_resolution_clock::time_point timeLastUpdate, timeNow;
 
 int main(){
     // Create the display and initialize the ray tracing program
-    display::initialize(1280, 720, "Real-Time Lighting / Photoreal Demo - by Calvin Weaver");
+    display::initialize(1920, 1080, "Real-Time Lighting / Photoreal Demo - by Calvin Weaver");
     rt_setup::initialize();
 
     bool captured = false;
@@ -21,9 +21,11 @@ int main(){
     while(!display::exiting()){
         // Delta is the time in seconds since the last update. This value is used to synchronize scene timing elements
         // that need to run at a consistent speed, even through inconsistent rendering speeds / update timings (lag).
-        float delta = (float)chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - timeLastUpdate).count() / 1000.0f;
-        delta = min(delta, 0.2f);
-        timeLastUpdate = chrono::high_resolution_clock::now();
+
+        timeNow = chrono::high_resolution_clock::now();
+        float delta = (float)chrono::duration_cast<chrono::nanoseconds>(timeNow - timeLastUpdate).count() / 1000000000.0f;
+        //delta = min(delta, 0.2f);
+        timeLastUpdate = timeNow;
 
         // Prepare the display for rendering
         display::preUpdate();
@@ -34,6 +36,7 @@ int main(){
         }else if(!captured){
             captured = true;
             rt_setup::capture();
+            cout << chrono::duration_cast<chrono::microseconds>(chrono::high_resolution_clock::now() - timeLastUpdate).count() << endl;
         }
 
         // Render the final image to the display

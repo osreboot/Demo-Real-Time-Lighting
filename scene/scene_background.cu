@@ -3,8 +3,8 @@
 class SceneBackground : public Scene{
 
 private:
-    const float value1 = 0.95f;//0.7f;
-    const float value2 = 0.9f;//0.5f;
+    const float value1 = /*0.95f;*/0.7f;
+    const float value2 = /*0.9f;*/0.5f;
     const bool close = false;
 
     const Material MAT_BASE1 = {false, 0.0f, 1.0f, 0.0f, 0.0f, vec3f(value1)};

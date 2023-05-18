@@ -152,7 +152,11 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)(){
 #endif
 
     // Assign final ray data based on all the above calculations
+#if SHADER_SCATTERING
     if(continuousObject || (prd.random() < materialNext.transparency && prd.random() > pReflectSchlick)){ // Refracted
+#else
+    if(continuousObject || (0.5f < materialNext.transparency && 0.5f > pReflectSchlick)){ // Refracted
+#endif
         if(leavingObject){
             if(prd.sizeMaterials > 0) prd.sizeMaterials--;
         }else{
@@ -188,13 +192,18 @@ OPTIX_MISS_PROGRAM(miss)(){
             prd.color = vec3f(0.0f);
             break;
         case SCENE_SKYBOX_WHITE:
-            prd.color = vec3f(min(1.0f, 1.0f + rdn.y));
+            //prd.color = vec3f(min(1.0f, 1.0f + rdn.y));
+            prd.color = vec3f(1.0f, 0.8f, 1.0f);
             break;
         case SCENE_SKYBOX_RGB:
             prd.color = (1.0f + rdn) / 2.0f;
             break;
         case SCENE_SKYBOX_UNDERLIT:
             prd.color = 1.0f - max(rdn.y, 0.0f);
+            break;
+        case SCENE_SKYBOX_NIGHT:
+            if(rdn.y <= 0.0f) prd.color =  vec3f(0.0f);
+            else prd.color = vec3f(0.0f, 0.0f, rdn.y / 10.0f);
             break;
     }
 #else
