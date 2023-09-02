@@ -1,4 +1,4 @@
-#include "scene.cuh"
+#include "scene.h"
 
 class SceneComposite : public Scene{
 

@@ -1,4 +1,4 @@
-#include "scene.cuh"
+#include "scene.h"
 
 #define INDEX_MATERIAL0 3
 #define INDEX_MATERIAL1 6

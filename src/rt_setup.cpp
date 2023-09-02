@@ -7,17 +7,17 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb/stb_image_write.h"
 
-#include "config.cuh"
-#include "display.cuh"
-#include "rt_setup.cuh"
+#include "config.h"
+#include "display.h"
+#include "rt_setup.h"
 #include "rt_program.cuh"
 
 using namespace std;
 
 extern "C" char rt_program_ptx[];
 
-OWLRayGen rayGen = {0};
-OWLContext context = {0};
+OWLRayGen rayGen(nullptr);
+OWLContext context(nullptr);
 
 vector<vec3f> vertices;
 vector<vec3i> indices;

@@ -1,4 +1,4 @@
-#include "scene.cuh"
+#include "scene.h"
 
 class SceneFarm : public Scene{
 

@@ -1,9 +1,9 @@
 #include <chrono>
 #include <glfw/glfw3.h>
 
-#include "config.cuh"
-#include "display.cuh"
-#include "rt_setup.cuh"
+#include "config.h"
+#include "display.h"
+#include "rt_setup.h"
 
 using namespace std;
 

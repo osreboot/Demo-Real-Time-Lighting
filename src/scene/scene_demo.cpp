@@ -1,6 +1,6 @@
 #include <owl/owl.h>
 
-#include "scene.cuh"
+#include "scene.h"
 
 class SceneDemo : public Scene{
 

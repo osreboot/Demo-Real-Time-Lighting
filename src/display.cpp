@@ -3,7 +3,7 @@
 #include <owl/helper/cuda.h>
 #include <cuda_gl_interop.h>
 
-#include "display.cuh"
+#include "display.h"
 
 using namespace owl;
 

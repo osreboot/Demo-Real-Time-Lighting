@@ -1,11 +1,11 @@
-#include "scene/scene.cuh"
-#include "scene/scene_simple.cu"
-#include "scene/scene_demo.cu"
-#include "scene/scene_tutorial.cu"
-#include "scene/scene_farm.cu"
-#include "scene/scene_id.cu"
-#include "scene/scene_composite.cu"
-#include "scene/scene_background.cu"
+#include "scene/scene.h"
+#include "scene/scene_simple.cpp"
+#include "scene/scene_demo.cpp"
+#include "scene/scene_tutorial.cpp"
+#include "scene/scene_farm.cpp"
+#include "scene/scene_id.cpp"
+#include "scene/scene_composite.cpp"
+#include "scene/scene_background.cpp"
 
 const SceneSimple sceneSimple;
 const SceneDemo sceneDemo;

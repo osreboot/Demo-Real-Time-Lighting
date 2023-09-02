@@ -1,6 +1,6 @@
 #include <optix_device.h>
 
-#include "config.cuh"
+#include "config.h"
 #include "rt_program.cuh"
 
 using namespace owl;

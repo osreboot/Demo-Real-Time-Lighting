@@ -6,37 +6,30 @@ set(CMAKE_CUDA_STANDARD 14)
 set(OptiX_ROOT_DIR "C:/ProgramData/NVIDIA Corporation/OptiX SDK 7.6.0")
 add_definitions(-DNDEBUG)
 
-set(SOURCE_FILES
-        "config.cuh"
-        "config.cu"
-        "main.cu"
-        "display.cuh"
-        "display.cu"
-        "rt_setup.cuh"
-        "rt_setup.cu")
+add_executable(${PROJECT_NAME} src/main.cpp)
 
-add_subdirectory(scene)
+include_directories(lib)
+include_directories(src)
 
-add_executable(DemoRealTimeLighting ${SOURCE_FILES})
+add_subdirectory(src)
 
 set(OpenGL_GL_PREFERENCE "LEGACY")
 find_package(OpenGL REQUIRED OPTIONAL_COMPONENTS OpenGL)
 
 if(TARGET OpenGL::OpenGL)
-    target_link_libraries(DemoRealTimeLighting PUBLIC OpenGL::OpenGL)
+    target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::OpenGL)
 else()
-    target_link_libraries(DemoRealTimeLighting PUBLIC OpenGL::GL)
+    target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL)
 endif()
 
-set(owl_dir ${PROJECT_SOURCE_DIR}/owl)
-add_subdirectory(${owl_dir} EXCLUDE_FROM_ALL)
+add_subdirectory(lib/owl EXCLUDE_FROM_ALL)
 
 embed_ptx(
-        OUTPUT_TARGET DemoRealTimeLighting-ptx
+        OUTPUT_TARGET ${PROJECT_NAME}-ptx
         PTX_LINK_LIBRARIES owl::owl
-        SOURCES "rt_program.cuh" "rt_program.cu"
+        SOURCES "src/rt_program.cuh" "src/rt_program.cu"
 )
-target_link_libraries(DemoRealTimeLighting PRIVATE glfw owl::owl DemoRealTimeLighting-ptx)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw owl::owl ${PROJECT_NAME}-ptx)
 
-set_target_properties(DemoRealTimeLighting PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON)

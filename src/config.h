@@ -1,6 +1,6 @@
 #pragma once
 
-#include "scene/scene.cuh"
+#include "scene/scene.h"
 
 #define SCENE_SKYBOX_BLACK 0
 #define SCENE_SKYBOX_WHITE 1
@@ -18,7 +18,7 @@ extern const Scene* SCENE_LIST[];
 #define PROGRAM_MODE_DYNAMIC 0
 
 // Number of raycasts per pixel
-#define PROGRAM_SAMPLES 20000
+#define PROGRAM_SAMPLES 2000
 
 // Disable specific shader features for demonstration purposes
 #define SHADER_SKYBOX_DIRECTIONAL 1
