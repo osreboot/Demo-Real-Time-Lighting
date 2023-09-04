@@ -1,8 +1,7 @@
-#include <owl/owl.h>
 
-#include "scene.h"
+#include "Scene.h"
 
-class SceneDemo : public Scene{
+class SceneDemo : public Scene {
 
 private:
     const Material MAT_BASE1 = {false, 0.0f, 1.0f, 0.5f, 0.02f, {0.4f, 0.4f, 0.4f}};
@@ -20,7 +19,7 @@ private:
 public:
 
     // This scene was used to initially create the shader programs. It has a bit of everything!
-    void initialize(const SceneBuildParams &params) const override {
+    void initialize(SceneBuildParams &params) const override {
         int indexTile = 0;
         for(float x = -10.0f; x <= 10.0f; x += 2.0f){
             for(float y = -10.0f; y <= 10.0f; y += 2.0f){

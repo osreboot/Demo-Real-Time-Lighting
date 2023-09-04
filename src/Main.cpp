@@ -1,9 +1,9 @@
 #include <chrono>
 #include <glfw/glfw3.h>
 
-#include "config.h"
-#include "display.h"
-#include "rt_setup.h"
+#include "Config.h"
+#include "Display.h"
+#include "RayTracerHost.h"
 
 using namespace std;
 
@@ -36,7 +36,9 @@ int main(){
         }else if(!captured){
             captured = true;
             rt_setup::capture();
-            cout << chrono::duration_cast<chrono::microseconds>(chrono::high_resolution_clock::now() - timeLastUpdate).count() << endl;
+            cout << "Rendered in ";
+            cout << chrono::duration_cast<chrono::microseconds>(chrono::high_resolution_clock::now() - timeLastUpdate).count();
+            cout << " microseconds." << endl;
         }
 
         // Render the final image to the display

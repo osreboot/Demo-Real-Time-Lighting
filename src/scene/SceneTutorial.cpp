@@ -1,6 +1,7 @@
-#include "scene.h"
 
-class SceneTutorial : public Scene{
+#include "Scene.h"
+
+class SceneTutorial : public Scene {
 
 private:
     const Material MAT_BASE1 = {false, 0.0f, 1.0f, 0.3f, 0.05f, {0.4f, 0.4f, 0.4f}};
@@ -13,7 +14,7 @@ private:
 
 public:
     // Demonstration scene that is as simple as possible (while still having each type of material).
-    void initialize(const SceneBuildParams& params) const override {
+    void initialize(SceneBuildParams& params) const override {
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 0.5f){
             for(float z = -5.0f; z <= 5.0f; z += 0.5f){

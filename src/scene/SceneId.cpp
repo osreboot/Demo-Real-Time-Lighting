@@ -1,9 +1,10 @@
-#include "scene.h"
+
+#include "Scene.h"
 
 #define INDEX_MATERIAL1 1
 #define INDEX_MATERIAL2 1
 
-class SceneId : public Scene{
+class SceneId : public Scene {
 
 private:
     const Material MAT_BASE1 = {false, 0.0f, 1.0f, 1.0f, 0.01f, {0.5f, 0.5f, 0.8f}};
@@ -13,7 +14,7 @@ private:
 public:
 
     // This scene renders my (Calvin Weaver) student ID in big reflective letters with an interesting dual material tiled floor.
-    void initialize(const SceneBuildParams& params) const override {
+    void initialize(SceneBuildParams& params) const override {
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 1.0f){
             for(float z = -5.0f; z <= 5.0f; z += 1.0f){

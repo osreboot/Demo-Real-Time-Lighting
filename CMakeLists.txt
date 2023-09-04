@@ -6,7 +6,7 @@ set(CMAKE_CUDA_STANDARD 14)
 set(OptiX_ROOT_DIR "C:/ProgramData/NVIDIA Corporation/OptiX SDK 7.6.0")
 add_definitions(-DNDEBUG)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME} src/Main.cpp)
 
 include_directories(lib)
 include_directories(src)
@@ -27,7 +27,7 @@ add_subdirectory(lib/owl EXCLUDE_FROM_ALL)
 embed_ptx(
         OUTPUT_TARGET ${PROJECT_NAME}-ptx
         PTX_LINK_LIBRARIES owl::owl
-        SOURCES "src/rt_program.cuh" "src/rt_program.cu"
+        SOURCES "src/RayTracerDevice.cuh" "src/RayTracerDevice.cu"
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw owl::owl ${PROJECT_NAME}-ptx)
 

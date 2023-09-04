@@ -1,6 +1,7 @@
-#include "scene.h"
 
-class SceneBackground : public Scene{
+#include "Scene.h"
+
+class SceneBackground : public Scene {
 
 private:
     const float value1 = /*0.95f;*/0.7f;
@@ -16,7 +17,7 @@ private:
 public:
 
     // Creates a hallway with decorative lights on the walls and ceiling
-    void initialize(const SceneBuildParams& params) const override {
+    void initialize(SceneBuildParams& params) const override {
         int indexTile = 0;
         for(float z = -2.0f; z <= 2.0f; z += 0.5f){
             addBox(params, vec3f(0.25f, 1.0f, 0.25f), {-2.0f, 0.0f, z}, 0.0f, indexTile % 2 == 0 ? MAT_BASE1 : MAT_BASE2);

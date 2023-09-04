@@ -1,6 +1,7 @@
-#include "scene.h"
 
-class SceneFarm : public Scene{
+#include "Scene.h"
+
+class SceneFarm : public Scene {
 
 private:
     const float SIZE_FARM_BLOCK = 0.5f;
@@ -42,7 +43,7 @@ private:
 public:
 
     // This scene has a bunch of cube "farm" plots on the ground and reflective walls. Best used with a dark sky!
-    void initialize(const SceneBuildParams &params) const override {
+    void initialize(SceneBuildParams &params) const override {
         addBox(params, {9.0f, 0.05f, 7.0f}, {0.0f, -0.1f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY);
 
         addBox(params, {9.0f, 3.0f, 0.05f}, {0.0f, 3.0f, 7.05f}, 0.0f, MAT_CHROME);

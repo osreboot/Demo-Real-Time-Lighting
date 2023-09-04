@@ -1,6 +1,7 @@
-#include "scene.h"
 
-class SceneComposite : public Scene{
+#include "Scene.h"
+
+class SceneComposite : public Scene {
 
 private:
     const Material MAT_BASE1 = {false, 0.0f, 1.0f, 0.3f, 0.05f, {0.4f, 0.4f, 0.4f}};
@@ -18,7 +19,7 @@ private:
 public:
 
     // Creates a cube with interconnected sides of varying materials
-    void initialize(const SceneBuildParams& params) const override {
+    void initialize(SceneBuildParams& params) const override {
         int indexTile = 0;
         for(float x = -2.0f; x <= 2.0f; x += 0.5f){
             for(float z = -2.0f; z <= 2.0f; z += 0.5f){

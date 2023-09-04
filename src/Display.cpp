@@ -1,11 +1,9 @@
+
 #include <glfw/glfw3.h>
-#include <owl/owl.h>
 #include <owl/helper/cuda.h>
 #include <cuda_gl_interop.h>
 
-#include "display.h"
-
-using namespace owl;
+#include "Display.h"
 
 GLFWwindow* window;
 
@@ -21,7 +19,7 @@ void display::initialize(int widthArg, int heightArg, const char* titleArg){
     glfwInit();
     glfwDefaultWindowHints();
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    window = glfwCreateWindow(widthArg, heightArg, titleArg, glfwGetPrimaryMonitor(), NULL);
+    window = glfwCreateWindow(widthArg, heightArg, titleArg, glfwGetPrimaryMonitor(), nullptr);
     glfwMakeContextCurrent(window);
 
     // Hide the cursor

@@ -1,7 +1,7 @@
 #include <optix_device.h>
 
-#include "config.h"
-#include "rt_program.cuh"
+#include "Config.h"
+#include "RayTracerDevice.cuh"
 
 using namespace owl;
 
@@ -192,8 +192,7 @@ OPTIX_MISS_PROGRAM(miss)(){
             prd.color = vec3f(0.0f);
             break;
         case SCENE_SKYBOX_WHITE:
-            //prd.color = vec3f(min(1.0f, 1.0f + rdn.y));
-            prd.color = vec3f(1.0f, 0.8f, 1.0f);
+            prd.color = vec3f(min(1.0f, 1.0f + rdn.y));
             break;
         case SCENE_SKYBOX_RGB:
             prd.color = (1.0f + rdn) / 2.0f;

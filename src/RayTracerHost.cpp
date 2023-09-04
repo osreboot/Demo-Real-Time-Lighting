@@ -1,3 +1,4 @@
+
 #define CAMERA_COS_FOVY 0.9f // was 0.66f
 #define CAMERA_LOOK_UP vec3f{0.0f, 1.0f, 0.0f}
 
@@ -7,33 +8,23 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb/stb_image_write.h"
 
-#include "config.h"
-#include "display.h"
-#include "rt_setup.h"
-#include "rt_program.cuh"
-
-using namespace std;
-
-extern "C" char rt_program_ptx[];
-
-OWLRayGen rayGen(nullptr);
-OWLContext context(nullptr);
+#include "Config.h"
+#include "Display.h"
+#include "RayTracerHost.h"
+#include "RayTracerDevice.cuh"
 
 vector<vec3f> vertices;
 vector<vec3i> indices;
 vector<Material> materials;
 
-float timer = 0.0f, timerFreeze = 5.0f;
-
-// Called once at the start of main.cu
-void rt_setup::initialize(){
+RayTracerHost::RayTracerHost(){
     // Fetch scene data
-    const Scene &scene = *SCENE_LIST[SCENE_INDEX];
+    const Scene& scene = *SCENE_LIST[SCENE_INDEX];
     scene.initialize({&vertices, &indices, &materials});
 
     // Initialize OWL data structures and parameters with our world geometry and materials
     context = owlContextCreate(nullptr, 1);
-    OWLModule module = owlModuleCreate(context, rt_program_ptx);
+    OWLModule module = owlModuleCreate(context, RayTracerDevice_ptx);
 
     OWLVarDecl trianglesGeomVars[] = {
             {"index", OWL_BUFPTR, OWL_OFFSETOF(TrianglesGeomData, index)},
@@ -80,8 +71,7 @@ void rt_setup::initialize(){
     owlBuildPipeline(context);
 }
 
-// Called repeatedly in main.cu when running in dynamic mode
-void rt_setup::update(float delta){
+void RayTracerHost::update(float delta){
     if(timerFreeze > 0.0f) timerFreeze -= delta;
     else timer += delta / (2.0f * 16.0f);
 
@@ -108,8 +98,7 @@ void rt_setup::update(float delta){
     owlRayGenLaunch2D(rayGen, display::getSize().x, display::getSize().y);
 }
 
-// Called once by main.cu when running in static mode
-void rt_setup::capture(){
+void RayTracerHost::capture(){
     // Calculate camera parameters
     vec3f camera_pos = SCENE_LIST[SCENE_INDEX]->getCameraStaticLocation();
     vec3f camera_d00 = normalize(SCENE_LIST[SCENE_INDEX]->getCameraStaticTarget() - camera_pos);
