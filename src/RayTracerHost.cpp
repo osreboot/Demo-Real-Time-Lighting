@@ -13,14 +13,28 @@
 #include "RayTracerHost.h"
 #include "RayTracerDevice.cuh"
 
-vector<vec3f> vertices;
-vector<vec3i> indices;
-vector<Material> materials;
 
 RayTracerHost::RayTracerHost(){
     // Fetch scene data
     const Scene& scene = *SCENE_LIST[SCENE_INDEX];
-    scene.initialize({&vertices, &indices, &materials});
+    std::vector<Model*> models;
+    scene.build(models);
+
+    // Extract vertex, triangle, and texture/material data from scene models
+    // TODO This could be optimized by using primitive arrays instead of vectors
+    std::vector<owl::vec3f> vertices;
+    std::vector<owl::vec3i> triangles;
+    std::vector<Material> materials;
+    int triangleOffset = 0;
+    for(const Model* model : models){
+        for(int i = 0; i < model->numVertices(); i++) vertices.push_back(model->getVertices()[i]);
+        for(int i = 0; i < model->numTriangles(); i++) triangles.push_back(model->getTriangles()[i] + triangleOffset);
+        materials.push_back(model->getMaterial());
+        triangleOffset += model->numVertices();
+    }
+
+    // Cleanup scene
+    for(Model* model : models) delete model;
 
     // Initialize OWL data structures and parameters with our world geometry and materials
     context = owlContextCreate(nullptr, 1);
@@ -35,15 +49,15 @@ RayTracerHost::RayTracerHost(){
     owlGeomTypeSetClosestHit(trianglesGeomType, 0, module, "TriangleMesh");
 
     OWLBuffer vertexBuffer = owlDeviceBufferCreate(context, OWL_FLOAT3, vertices.size(), vertices.data());
-    OWLBuffer indexBuffer = owlDeviceBufferCreate(context, OWL_INT3, indices.size(), indices.data());
+    OWLBuffer triangleBuffer = owlDeviceBufferCreate(context, OWL_INT3, triangles.size(), triangles.data());
     OWLBuffer materialBuffer = owlDeviceBufferCreate(context, OWL_USER_TYPE(materials[0]), materials.size(), materials.data());
 
     OWLGeom trianglesGeom = owlGeomCreate(context, trianglesGeomType);
     owlTrianglesSetVertices(trianglesGeom, vertexBuffer, vertices.size(), sizeof(vertices[0]), 0);
-    owlTrianglesSetIndices(trianglesGeom, indexBuffer, indices.size(), sizeof(indices[0]), 0);
+    owlTrianglesSetIndices(trianglesGeom, triangleBuffer, triangles.size(), sizeof(triangles[0]), 0);
 
     owlGeomSetBuffer(trianglesGeom, "vertex", vertexBuffer);
-    owlGeomSetBuffer(trianglesGeom, "index", indexBuffer);
+    owlGeomSetBuffer(trianglesGeom, "index", triangleBuffer);
     owlGeomSetBuffer(trianglesGeom, "material", materialBuffer);
 
     OWLGroup trianglesGroup = owlTrianglesGeomGroupCreate(context, 1, &trianglesGeom);
@@ -76,12 +90,12 @@ void RayTracerHost::update(float delta){
     else timer += delta / (2.0f * 16.0f);
 
     // Calculate camera parameters
-    vec3f camera_pos = SCENE_LIST[SCENE_INDEX]->getCameraDynamicLocation(timer);
-    if(timerFreeze > 0.0f) camera_pos += vec3f(0.0f, 10.0f, 0.0f);
-    vec3f camera_d00 = normalize(SCENE_LIST[SCENE_INDEX]->getCameraDynamicTarget(timer) - camera_pos);
+    owl::vec3f camera_pos = SCENE_LIST[SCENE_INDEX]->getCameraDynamicLocation(timer);
+    if(timerFreeze > 0.0f) camera_pos += owl::vec3f(0.0f, 10.0f, 0.0f);
+    owl::vec3f camera_d00 = normalize(SCENE_LIST[SCENE_INDEX]->getCameraDynamicTarget(timer) - camera_pos);
     float aspect = float(display::getSize().x) / float(display::getSize().y);
-    vec3f camera_ddu = CAMERA_COS_FOVY * aspect * normalize(cross(camera_d00,CAMERA_LOOK_UP));
-    vec3f camera_ddv = CAMERA_COS_FOVY * normalize(cross(camera_ddu,camera_d00));
+    owl::vec3f camera_ddu = CAMERA_COS_FOVY * aspect * normalize(cross(camera_d00, owl::CAMERA_LOOK_UP));
+    owl::vec3f camera_ddv = CAMERA_COS_FOVY * normalize(cross(camera_ddu,camera_d00));
     camera_d00 -= 0.5f * camera_ddu;
     camera_d00 -= 0.5f * camera_ddv;
 
@@ -100,11 +114,11 @@ void RayTracerHost::update(float delta){
 
 void RayTracerHost::capture(){
     // Calculate camera parameters
-    vec3f camera_pos = SCENE_LIST[SCENE_INDEX]->getCameraStaticLocation();
-    vec3f camera_d00 = normalize(SCENE_LIST[SCENE_INDEX]->getCameraStaticTarget() - camera_pos);
+    owl::vec3f camera_pos = SCENE_LIST[SCENE_INDEX]->getCameraStaticLocation();
+    owl::vec3f camera_d00 = normalize(SCENE_LIST[SCENE_INDEX]->getCameraStaticTarget() - camera_pos);
     float aspect = float(display::getSize().x) / float(display::getSize().y);
-    vec3f camera_ddu = CAMERA_COS_FOVY * aspect * normalize(cross(camera_d00,CAMERA_LOOK_UP));
-    vec3f camera_ddv = CAMERA_COS_FOVY * normalize(cross(camera_ddu,camera_d00));
+    owl::vec3f camera_ddu = CAMERA_COS_FOVY * aspect * normalize(cross(camera_d00, owl::CAMERA_LOOK_UP));
+    owl::vec3f camera_ddv = CAMERA_COS_FOVY * normalize(cross(camera_ddu,camera_d00));
     camera_d00 -= 0.5f * camera_ddu;
     camera_d00 -= 0.5f * camera_ddv;
 

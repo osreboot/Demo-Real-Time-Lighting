@@ -12,7 +12,7 @@ chrono::high_resolution_clock::time_point timeLastUpdate, timeNow;
 int main(){
     // Create the display and initialize the ray tracing program
     display::initialize(1920, 1080, "Real-Time Lighting / Photoreal Demo - by Calvin Weaver");
-    rt_setup::initialize();
+    RayTracerHost rayTracer;
 
     bool captured = false;
     timeLastUpdate = chrono::high_resolution_clock::now();
@@ -32,10 +32,10 @@ int main(){
 
         // Run the ray tracing program
         if(PROGRAM_MODE_DYNAMIC){
-            rt_setup::update(delta);
+            rayTracer.update(delta);
         }else if(!captured){
             captured = true;
-            rt_setup::capture();
+            rayTracer.capture();
             cout << "Rendered in ";
             cout << chrono::duration_cast<chrono::microseconds>(chrono::high_resolution_clock::now() - timeLastUpdate).count();
             cout << " microseconds." << endl;

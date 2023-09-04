@@ -1,6 +1,8 @@
 
 #include "Scene.h"
 
+using namespace owl;
+
 #define INDEX_MATERIAL1 1
 #define INDEX_MATERIAL2 1
 
@@ -14,7 +16,7 @@ private:
 public:
 
     // This scene renders my (Calvin Weaver) student ID in big reflective letters with an interesting dual material tiled floor.
-    void initialize(SceneBuildParams& params) const override {
+    void build(std::vector<Model*>& models) const override {/*
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 1.0f){
             for(float z = -5.0f; z <= 5.0f; z += 1.0f){
@@ -22,7 +24,7 @@ public:
             }
         }
 
-        const string id = "20007737";
+        const std::string id = "20007737";
         float x = -((float)id.length() / 2.0f) * 0.7f + 0.35f;
         for(char c : id){
             addBox(params, {0.2f, 0.05f, 0.05f}, {x, 0.4f, 0.0f}, 0.0f, MAT_NUMBERS);
@@ -45,14 +47,14 @@ public:
                 addBox(params, {0.05f, 0.2f, 0.05f}, {x + 0.25f, -0.25f, 0.0f}, 0.0f, MAT_NUMBERS);
             }
             x += 0.7f;
-        }
+        }*/
     }
 
-    vec3f getCameraDynamicLocation(const float timer) const override {
+    vec3f getCameraDynamicLocation(float timer) const override {
         return {sin(timer) * 6.0f, 2.75f, cos(timer) * 6.0f};
     }
 
-    vec3f getCameraDynamicTarget(const float timer) const override {
+    vec3f getCameraDynamicTarget(float timer) const override {
         return {0.0f, 0.0f, 0.0f};
     }
 

@@ -7,13 +7,13 @@
 
 GLFWwindow* window;
 
-vec2i size = {0};
+owl::vec2i size = {0};
 GLuint textureFrameBuffer = {0};
 cudaGraphicsResource_t textureCuda = {0};
 uint32_t *frameBuffer = {nullptr};
 
 void display::initialize(int widthArg, int heightArg, const char* titleArg){
-    size = vec2i(widthArg, heightArg);
+    size = owl::vec2i(widthArg, heightArg);
 
     // Create the window
     glfwInit();
@@ -92,6 +92,6 @@ uint32_t* display::getFrameBuffer(){
     return frameBuffer;
 }
 
-vec2i display::getSize(){
+owl::vec2i display::getSize(){
     return size;
 }

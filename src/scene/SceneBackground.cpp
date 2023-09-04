@@ -1,6 +1,8 @@
 
 #include "Scene.h"
 
+using namespace owl;
+
 class SceneBackground : public Scene {
 
 private:
@@ -17,7 +19,7 @@ private:
 public:
 
     // Creates a hallway with decorative lights on the walls and ceiling
-    void initialize(SceneBuildParams& params) const override {
+    void build(std::vector<Model*>& models) const override {/*
         int indexTile = 0;
         for(float z = -2.0f; z <= 2.0f; z += 0.5f){
             addBox(params, vec3f(0.25f, 1.0f, 0.25f), {-2.0f, 0.0f, z}, 0.0f, indexTile % 2 == 0 ? MAT_BASE1 : MAT_BASE2);
@@ -41,14 +43,14 @@ public:
 
         addBox(params, vec3f(2.0f, 1.0f, 0.25f), {0.0f, 0.0f, 2.5f}, 0.0f, MAT_BASE1);
         addBox(params, vec3f(2.0f, 0.1f, 2.5f), {0.0f, 0.85f + 0.25f, 0.0f}, 0.0f, MAT_LIGHT1);
-        addBox(params, vec3f(2.0f, 0.02f, 2.5f), {0.0f, 0.79f, 0.0f}, 0.0f, MAT_GLASS1);
+        addBox(params, vec3f(2.0f, 0.02f, 2.5f), {0.0f, 0.79f, 0.0f}, 0.0f, MAT_GLASS1);*/
     }
 
-    vec3f getCameraDynamicLocation(const float timer) const override {
+    vec3f getCameraDynamicLocation(float timer) const override {
         return getCameraStaticLocation(); // Not supported for this scene
     }
 
-    vec3f getCameraDynamicTarget(const float timer) const override {
+    vec3f getCameraDynamicTarget(float timer) const override {
         return getCameraStaticTarget(); // Not supported for this scene
     }
 

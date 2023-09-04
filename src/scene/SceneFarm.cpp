@@ -1,6 +1,8 @@
 
 #include "Scene.h"
 
+using namespace owl;
+
 class SceneFarm : public Scene {
 
 private:
@@ -26,6 +28,7 @@ private:
     }
 
     // Creates a "farm" plot on the floor with a grid of cubes
+    /*
     void addFarm(const SceneBuildParams &params, vec3f location) const {
         addBox(params, {SIZE_FARM_BLOCK * 3.5f, 0.05f, SIZE_FARM_BLOCK * 3.5f},
                {location.x, location.y - 0.02f, location.z}, 0.0f,
@@ -38,12 +41,12 @@ private:
                        getMaterial({location.x + x, location.z + z}, random() < 0.1f));
             }
         }
-    }
+    }*/
 
 public:
 
     // This scene has a bunch of cube "farm" plots on the ground and reflective walls. Best used with a dark sky!
-    void initialize(SceneBuildParams &params) const override {
+    void build(std::vector<Model*>& models) const override {/*
         addBox(params, {9.0f, 0.05f, 7.0f}, {0.0f, -0.1f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY);
 
         addBox(params, {9.0f, 3.0f, 0.05f}, {0.0f, 3.0f, 7.05f}, 0.0f, MAT_CHROME);
@@ -62,14 +65,14 @@ public:
             addBox(params, {SIZE_FARM_BLOCK2, 3.0f, size}, {x, 3.0f, -7.0f + size}, 0.0f, MAT_CHROME);
         }
 
-        addBox(params, {1.0f, 1.0f, 1.0f}, {0.0f, 5.0f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY);
+        addBox(params, {1.0f, 1.0f, 1.0f}, {0.0f, 5.0f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY);*/
     }
 
-    vec3f getCameraDynamicLocation(const float timer) const override {
+    vec3f getCameraDynamicLocation(float timer) const override {
         return {sin(timer) * 6.0f, 2.0f, cos(timer) * 6.0f};
     }
 
-    vec3f getCameraDynamicTarget(const float timer) const override {
+    vec3f getCameraDynamicTarget(float timer) const override {
         return {0.0f, sin(timer) + 1.0f, 0.0f};
     }
 

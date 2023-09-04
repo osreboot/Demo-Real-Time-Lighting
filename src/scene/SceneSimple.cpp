@@ -1,5 +1,8 @@
 
 #include "Scene.h"
+#include "ModelCuboid.h"
+
+using namespace owl;
 
 #define INDEX_MATERIAL0 3
 #define INDEX_MATERIAL1 4
@@ -24,29 +27,29 @@ private:
 public:
 
     // Creates a cube with a bunch of interconnected side cubes and a cube at the core. Change the macro numbers to swap between different materials!
-    void initialize(SceneBuildParams& params) const override {
+    void build(std::vector<Model*>& models) const override {
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 1.0f){
             for(float z = -5.0f; z <= 5.0f; z += 1.0f){
-                addBox(params, vec3f(0.5f), {x, -2.5f, z}, 0.0f, indexTile++ % 2 == 0 ? MAT_BASE1 : MAT_BASE2);
+                models.push_back(new ModelCuboid(vec3f(0.5f), {x, -2.5f, z}, 0.0f, indexTile++ % 2 == 0 ? MAT_BASE1 : MAT_BASE2));
             }
         }
 
-        addBox(params, vec3f(0.2f), {0.0f, 0.0f, 0.0f}, 0.0f, materials[INDEX_MATERIAL0]);
-        addBox(params, vec3f(1.0f), {0.0f, 0.0f, 0.0f}, 0.0f, materials[INDEX_MATERIAL1]);
+        models.push_back(new ModelCuboid(vec3f(0.2f), {0.0f, 0.0f, 0.0f}, 0.0f, materials[INDEX_MATERIAL0]));
+        models.push_back(new ModelCuboid(vec3f(1.0f), {0.0f, 0.0f, 0.0f}, 0.0f, materials[INDEX_MATERIAL1]));
 
         for(vec3f m : {vec3f(1.0f, 1.0f, 1.0f), vec3f(-1.0f, -1.0f, 1.0f), vec3f(1.0f, -1.0f, -1.0f), vec3f(-1.0f, 1.0f, -1.0f)}){
-            addBox(params, vec3f(0.6f), m * 0.7f, 0.0f, materials[INDEX_MATERIAL2]);
-            addBox(params, vec3f(0.4f), -m * 0.7f, 0.0f, materials[INDEX_MATERIAL2]);
+            models.push_back(new ModelCuboid(vec3f(0.6f), m * 0.7f, 0.0f, materials[INDEX_MATERIAL2]));
+            models.push_back(new ModelCuboid(vec3f(0.4f), -m * 0.7f, 0.0f, materials[INDEX_MATERIAL2]));
         }
 
     }
 
-    vec3f getCameraDynamicLocation(const float timer) const override {
+    vec3f getCameraDynamicLocation(float timer) const override {
         return {sin(timer) * 6.0f, 2.75f, cos(timer) * 6.0f};
     }
 
-    vec3f getCameraDynamicTarget(const float timer) const override {
+    vec3f getCameraDynamicTarget(float timer) const override {
         return {0.0f, 0.0f, 0.0f};
     }
 

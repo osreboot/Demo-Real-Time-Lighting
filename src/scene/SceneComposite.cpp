@@ -1,6 +1,8 @@
 
 #include "Scene.h"
 
+using namespace owl;
+
 class SceneComposite : public Scene {
 
 private:
@@ -19,7 +21,7 @@ private:
 public:
 
     // Creates a cube with interconnected sides of varying materials
-    void initialize(SceneBuildParams& params) const override {
+    void build(std::vector<Model*>& models) const override {/*
         int indexTile = 0;
         for(float x = -2.0f; x <= 2.0f; x += 0.5f){
             for(float z = -2.0f; z <= 2.0f; z += 0.5f){
@@ -55,14 +57,14 @@ public:
         addBox(params, vec3f(0.1f, 0.05f, 0.05f), {0.0f, -0.525f, -0.525f}, 0.0f, MAT_CUBE4);
         addBox(params, vec3f(0.05f, 0.05f, 0.1f), {-0.525f, 0.525f, 0.0f}, 0.0f, MAT_CUBE1);
         addBox(params, vec3f(0.05f, 0.1f, 0.05f), {-0.525f, 0.0f, 0.525f}, 0.0f, MAT_CUBE5);
-        addBox(params, vec3f(0.1f, 0.05f, 0.05f), {0.0f, -0.525f, 0.525f}, 0.0f, MAT_CUBE2);
+        addBox(params, vec3f(0.1f, 0.05f, 0.05f), {0.0f, -0.525f, 0.525f}, 0.0f, MAT_CUBE2);*/
     }
 
-    vec3f getCameraDynamicLocation(const float timer) const override {
+    vec3f getCameraDynamicLocation(float timer) const override {
         return {sin(timer) * 2.5f, 1.7f, cos(timer) * 2.5f};
     }
 
-    vec3f getCameraDynamicTarget(const float timer) const override {
+    vec3f getCameraDynamicTarget(float timer) const override {
         return {0.0f, -0.2f, 0.0f};
     }
 

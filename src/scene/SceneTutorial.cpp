@@ -1,6 +1,8 @@
 
 #include "Scene.h"
 
+using namespace owl;
+
 class SceneTutorial : public Scene {
 
 private:
@@ -14,7 +16,7 @@ private:
 
 public:
     // Demonstration scene that is as simple as possible (while still having each type of material).
-    void initialize(SceneBuildParams& params) const override {
+    void build(std::vector<Model*>& models) const override {/*
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 0.5f){
             for(float z = -5.0f; z <= 5.0f; z += 0.5f){
@@ -25,14 +27,14 @@ public:
         addBox(params, vec3f(0.5f), {-1.8f, 0.6f, 0.0f}, 0.0f, MAT_LAMBERT);
         addBox(params, vec3f(0.5f), {-0.6f, 0.6f, 0.0f}, 0.0f, MAT_LIGHT);
         addBox(params, vec3f(0.5f), {0.6f, 0.6f, 0.0f}, 0.0f, MAT_GLASS);
-        addBox(params, vec3f(0.5f), {1.8f, 0.6f, 0.0f}, 0.0f, MAT_CHROME);
+        addBox(params, vec3f(0.5f), {1.8f, 0.6f, 0.0f}, 0.0f, MAT_CHROME);*/
     }
 
-    vec3f getCameraDynamicLocation(const float timer) const override {
+    vec3f getCameraDynamicLocation(float timer) const override {
         return vec3f(sin(timer) * 4.0f, 2.5f, cos(timer) * 4.0f) * 1.2f;
     }
 
-    vec3f getCameraDynamicTarget(const float timer) const override {
+    vec3f getCameraDynamicTarget(float timer) const override {
         return {0.0f, 0.4f, 0.0f};
     }
 

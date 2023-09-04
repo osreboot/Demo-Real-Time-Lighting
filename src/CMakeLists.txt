@@ -5,6 +5,8 @@ target_sources(${PROJECT_NAME} PRIVATE
         Display.h
         Main.cpp
         Model.h
+        ModelCuboid.cpp
+        ModelCuboid.h
         RayTracerHost.cpp
         RayTracerHost.h
         scene/Scene.h

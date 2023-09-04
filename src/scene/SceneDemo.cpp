@@ -1,6 +1,8 @@
 
 #include "Scene.h"
 
+using namespace owl;
+
 class SceneDemo : public Scene {
 
 private:
@@ -19,7 +21,7 @@ private:
 public:
 
     // This scene was used to initially create the shader programs. It has a bit of everything!
-    void initialize(SceneBuildParams &params) const override {
+    void build(std::vector<Model*>& models) const override {/*
         int indexTile = 0;
         for(float x = -10.0f; x <= 10.0f; x += 2.0f){
             for(float y = -10.0f; y <= 10.0f; y += 2.0f){
@@ -59,14 +61,14 @@ public:
         addBox(params, vec3f(1.0f, 0.05f, 1.0f), vec3f(3.0f, 0.05f, -3.0f), 45.0f, MAT_FLAT2);
 
         addBox(params, vec3f(1.0f, 0.05f, 1.0f), vec3f(3.0f, 2.0f, -3.0f), 45.0f, MAT_LIGHT);
-        addBox(params, vec3f(1.0f, 0.05f, 1.0f), vec3f(-3.0f, 2.0f, 3.0f), 45.0f, MAT_LIGHT_BLUE);
+        addBox(params, vec3f(1.0f, 0.05f, 1.0f), vec3f(-3.0f, 2.0f, 3.0f), 45.0f, MAT_LIGHT_BLUE);*/
     }
 
-    vec3f getCameraDynamicLocation(const float timer) const override {
+    vec3f getCameraDynamicLocation(float timer) const override {
         return vec3f(sin(timer) * 10.0f, 4.0f, cos(timer) * 10.0f);
     }
 
-    vec3f getCameraDynamicTarget(const float timer) const override {
+    vec3f getCameraDynamicTarget(float timer) const override {
         return vec3f(0.0f);
     }
 
