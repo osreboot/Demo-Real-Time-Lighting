@@ -19,7 +19,7 @@ inline float random(){
 class Scene {
 
 public:
-    virtual void build(std::vector<Model*>& models) const = 0;
+    virtual void build(std::vector<std::shared_ptr<Model>>& models) const = 0;
     virtual owl::vec3f getCameraDynamicLocation(float timer) const { return {0.0f, 0.0f, 0.0f}; }
     virtual owl::vec3f getCameraDynamicTarget(float timer) const { return {0.0f, 0.0f, 0.0f}; }
     virtual owl::vec3f getCameraStaticLocation() const { return {0.0f, 0.0f, 0.0f}; }

@@ -27,20 +27,20 @@ private:
 public:
 
     // Creates a cube with a bunch of interconnected side cubes and a cube at the core. Change the macro numbers to swap between different materials!
-    void build(std::vector<Model*>& models) const override {
+    void build(std::vector<std::shared_ptr<Model>>& models) const override {
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 1.0f){
             for(float z = -5.0f; z <= 5.0f; z += 1.0f){
-                models.push_back(new ModelCuboid(vec3f(0.5f), {x, -2.5f, z}, 0.0f, indexTile++ % 2 == 0 ? MAT_BASE1 : MAT_BASE2));
+                models.emplace_back(new ModelCuboid(vec3f(0.5f), {x, -2.5f, z}, 0.0f, indexTile++ % 2 == 0 ? MAT_BASE1 : MAT_BASE2));
             }
         }
 
-        models.push_back(new ModelCuboid(vec3f(0.2f), {0.0f, 0.0f, 0.0f}, 0.0f, materials[INDEX_MATERIAL0]));
-        models.push_back(new ModelCuboid(vec3f(1.0f), {0.0f, 0.0f, 0.0f}, 0.0f, materials[INDEX_MATERIAL1]));
+        models.emplace_back(new ModelCuboid(vec3f(0.2f), {0.0f, 0.0f, 0.0f}, 0.0f, materials[INDEX_MATERIAL0]));
+        models.emplace_back(new ModelCuboid(vec3f(1.0f), {0.0f, 0.0f, 0.0f}, 0.0f, materials[INDEX_MATERIAL1]));
 
         for(vec3f m : {vec3f(1.0f, 1.0f, 1.0f), vec3f(-1.0f, -1.0f, 1.0f), vec3f(1.0f, -1.0f, -1.0f), vec3f(-1.0f, 1.0f, -1.0f)}){
-            models.push_back(new ModelCuboid(vec3f(0.6f), m * 0.7f, 0.0f, materials[INDEX_MATERIAL2]));
-            models.push_back(new ModelCuboid(vec3f(0.4f), -m * 0.7f, 0.0f, materials[INDEX_MATERIAL2]));
+            models.emplace_back(new ModelCuboid(vec3f(0.6f), m * 0.7f, 0.0f, materials[INDEX_MATERIAL2]));
+            models.emplace_back(new ModelCuboid(vec3f(0.4f), -m * 0.7f, 0.0f, materials[INDEX_MATERIAL2]));
         }
 
     }

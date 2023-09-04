@@ -21,7 +21,7 @@ private:
 public:
 
     // Creates a cube with interconnected sides of varying materials
-    void build(std::vector<Model*>& models) const override {/*
+    void build(std::vector<std::shared_ptr<Model>>& models) const override {/*
         int indexTile = 0;
         for(float x = -2.0f; x <= 2.0f; x += 0.5f){
             for(float z = -2.0f; z <= 2.0f; z += 0.5f){

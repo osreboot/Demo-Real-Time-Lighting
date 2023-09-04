@@ -21,7 +21,7 @@ private:
 public:
 
     // This scene was used to initially create the shader programs. It has a bit of everything!
-    void build(std::vector<Model*>& models) const override {/*
+    void build(std::vector<std::shared_ptr<Model>>& models) const override {/*
         int indexTile = 0;
         for(float x = -10.0f; x <= 10.0f; x += 2.0f){
             for(float y = -10.0f; y <= 10.0f; y += 2.0f){

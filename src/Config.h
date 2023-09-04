@@ -18,7 +18,7 @@ extern const Scene* SCENE_LIST[];
 #define PROGRAM_MODE_DYNAMIC 1
 
 // Number of raycasts per pixel
-#define PROGRAM_SAMPLES 20
+#define PROGRAM_SAMPLES 10
 
 // Disable specific shader features for demonstration purposes
 #define SHADER_SKYBOX_DIRECTIONAL 1

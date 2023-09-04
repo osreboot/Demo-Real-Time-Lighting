@@ -19,7 +19,7 @@ private:
 public:
 
     // Creates a hallway with decorative lights on the walls and ceiling
-    void build(std::vector<Model*>& models) const override {/*
+    void build(std::vector<std::shared_ptr<Model>>& models) const override {/*
         int indexTile = 0;
         for(float z = -2.0f; z <= 2.0f; z += 0.5f){
             addBox(params, vec3f(0.25f, 1.0f, 0.25f), {-2.0f, 0.0f, z}, 0.0f, indexTile % 2 == 0 ? MAT_BASE1 : MAT_BASE2);

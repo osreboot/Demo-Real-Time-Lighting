@@ -10,6 +10,8 @@ private:
 
     float timer = 0.0f, timerFreeze = 5.0f;
 
+    void updateCamera(owl::vec3f cameraLocation, owl::vec3f cameraTarget);
+
 public:
     RayTracerHost();
 

@@ -9,17 +9,17 @@ GLFWwindow* window;
 
 owl::vec2i size = {0};
 GLuint textureFrameBuffer = {0};
-cudaGraphicsResource_t textureCuda = {0};
-uint32_t *frameBuffer = {nullptr};
+cudaGraphicsResource_t textureCuda = nullptr;
+uint32_t *frameBuffer = nullptr;
 
-void display::initialize(int widthArg, int heightArg, const char* titleArg){
+void display::initialize(int widthArg, int heightArg, const std::string& titleArg){
     size = owl::vec2i(widthArg, heightArg);
 
     // Create the window
     glfwInit();
     glfwDefaultWindowHints();
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    window = glfwCreateWindow(widthArg, heightArg, titleArg, glfwGetPrimaryMonitor(), nullptr);
+    window = glfwCreateWindow(widthArg, heightArg, titleArg.c_str(), glfwGetPrimaryMonitor(), nullptr);
     glfwMakeContextCurrent(window);
 
     // Hide the cursor
@@ -29,8 +29,7 @@ void display::initialize(int widthArg, int heightArg, const char* titleArg){
     cudaMallocManaged(&frameBuffer, size.x * size.y * sizeof(uint32_t));
     glGenTextures(1, &textureFrameBuffer);
     glBindTexture(GL_TEXTURE_2D, textureFrameBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     cudaGraphicsGLRegisterImage(&textureCuda, textureFrameBuffer, GL_TEXTURE_2D, 0);
 }
 

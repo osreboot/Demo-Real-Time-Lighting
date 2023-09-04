@@ -4,7 +4,7 @@
 
 namespace display{
 
-    void initialize(int widthArg, int heightArg, const char* titleArg);
+    void initialize(int widthArg, int heightArg, const std::string& titleArg);
 
     void preUpdate();
     void postUpdate();
