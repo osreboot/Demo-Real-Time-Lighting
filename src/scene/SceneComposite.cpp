@@ -1,5 +1,6 @@
 
 #include "Scene.h"
+#include "ModelCuboid.h"
 
 using namespace owl;
 
@@ -21,43 +22,43 @@ private:
 public:
 
     // Creates a cube with interconnected sides of varying materials
-    void build(std::vector<std::shared_ptr<Model>>& models) const override {/*
+    void build(std::vector<std::shared_ptr<Model>>& models) const override {
         int indexTile = 0;
         for(float x = -2.0f; x <= 2.0f; x += 0.5f){
             for(float z = -2.0f; z <= 2.0f; z += 0.5f){
-                addBox(params, vec3f(0.25f), {x, -1.15f, z}, 0.0f, indexTile++ % 2 == 0 ? MAT_BASE1 : MAT_BASE2);
+                models.emplace_back(new ModelCuboid(vec3f(0.25f), {x, -1.15f, z}, 0.0f, indexTile++ % 2 == 0 ? MAT_BASE1 : MAT_BASE2));
             }
         }
 
-        addBox(params, vec3f(0.5f), {0.0f, 0.0f, 0.0f}, 0.0f, MAT_BASE3);
+        models.emplace_back(new ModelCuboid(vec3f(0.5f), {0.0f, 0.0f, 0.0f}, 0.0f, MAT_BASE3));
 
-        addBox(params, vec3f(0.5f, 0.05f, 0.5f), {0.0f, 0.5f, 0.0f}, 0.0f, MAT_CUBE1);
-        addBox(params, vec3f(0.2f), {0.0f, 0.5f, 0.0f}, 0.0f, MAT_CUBE1);
-        addBox(params, vec3f(0.5f, 0.025f, 0.5f), {0.0f, -0.525f, 0.0f}, 0.0f, MAT_CUBE6);
-        addBox(params, vec3f(0.2f), {0.0f, -0.5f, 0.0f}, 0.0f, MAT_CUBE6);
+        models.emplace_back(new ModelCuboid(vec3f(0.5f, 0.05f, 0.5f), {0.0f, 0.5f, 0.0f}, 0.0f, MAT_CUBE1));
+        models.emplace_back(new ModelCuboid(vec3f(0.2f), {0.0f, 0.5f, 0.0f}, 0.0f, MAT_CUBE1));
+        models.emplace_back(new ModelCuboid(vec3f(0.5f, 0.025f, 0.5f), {0.0f, -0.525f, 0.0f}, 0.0f, MAT_CUBE6));
+        models.emplace_back(new ModelCuboid(vec3f(0.2f), {0.0f, -0.5f, 0.0f}, 0.0f, MAT_CUBE6));
 
-        addBox(params, vec3f(0.5f, 0.5f, 0.025f), {0.0f, 0.0f, 0.525f}, 0.0f, MAT_CUBE2);
-        addBox(params, vec3f(0.2f), {0.0f, 0.0f, 0.5f}, 0.0f, MAT_CUBE2);
-        addBox(params, vec3f(0.5f, 0.5f, 0.025f), {0.0f, 0.0f, -0.525f}, 0.0f, MAT_CUBE4);
-        addBox(params, vec3f(0.2f), {0.0f, 0.0f, -0.5f}, 0.0f, MAT_CUBE4);
+        models.emplace_back(new ModelCuboid(vec3f(0.5f, 0.5f, 0.025f), {0.0f, 0.0f, 0.525f}, 0.0f, MAT_CUBE2));
+        models.emplace_back(new ModelCuboid(vec3f(0.2f), {0.0f, 0.0f, 0.5f}, 0.0f, MAT_CUBE2));
+        models.emplace_back(new ModelCuboid(vec3f(0.5f, 0.5f, 0.025f), {0.0f, 0.0f, -0.525f}, 0.0f, MAT_CUBE4));
+        models.emplace_back(new ModelCuboid(vec3f(0.2f), {0.0f, 0.0f, -0.5f}, 0.0f, MAT_CUBE4));
 
-        addBox(params, vec3f(0.025f, 0.5f, 0.5f), {0.525f, 0.0f, 0.0f}, 0.0f, MAT_CUBE3);
-        addBox(params, vec3f(0.2f), {0.5f, 0.0f, 0.0f}, 0.0f, MAT_CUBE3);
-        addBox(params, vec3f(0.025f, 0.5f, 0.5f), {-0.525f, 0.0f, 0.0f}, 0.0f, MAT_CUBE5);
-        addBox(params, vec3f(0.2f), {-0.5f, 0.0f, 0.0f}, 0.0f, MAT_CUBE5);
+        models.emplace_back(new ModelCuboid(vec3f(0.025f, 0.5f, 0.5f), {0.525f, 0.0f, 0.0f}, 0.0f, MAT_CUBE3));
+        models.emplace_back(new ModelCuboid(vec3f(0.2f), {0.5f, 0.0f, 0.0f}, 0.0f, MAT_CUBE3));
+        models.emplace_back(new ModelCuboid(vec3f(0.025f, 0.5f, 0.5f), {-0.525f, 0.0f, 0.0f}, 0.0f, MAT_CUBE5));
+        models.emplace_back(new ModelCuboid(vec3f(0.2f), {-0.5f, 0.0f, 0.0f}, 0.0f, MAT_CUBE5));
 
-        addBox(params, vec3f(0.05f, 0.05f, 0.1f), {0.525f, 0.525f, 0.0f}, 0.0f, MAT_CUBE1);
-        addBox(params, vec3f(0.05f, 0.1f, 0.05f), {0.525f, 0.0f, 0.525f}, 0.0f, MAT_CUBE3);
-        addBox(params, vec3f(0.1f, 0.05f, 0.05f), {0.0f, 0.525f, 0.525f}, 0.0f, MAT_CUBE2);
-        addBox(params, vec3f(0.05f, 0.05f, 0.1f), {0.525f, -0.525f, 0.0f}, 0.0f, MAT_CUBE6);
-        addBox(params, vec3f(0.05f, 0.1f, 0.05f), {0.525f, 0.0f, -0.525f}, 0.0f, MAT_CUBE3);
-        addBox(params, vec3f(0.1f, 0.05f, 0.05f), {0.0f, 0.525f, -0.525f}, 0.0f, MAT_CUBE4);
-        addBox(params, vec3f(0.05f, 0.05f, 0.1f), {-0.525f, -0.525f, 0.0f}, 0.0f, MAT_CUBE6);
-        addBox(params, vec3f(0.05f, 0.1f, 0.05f), {-0.525f, 0.0f, -0.525f}, 0.0f, MAT_CUBE5);
-        addBox(params, vec3f(0.1f, 0.05f, 0.05f), {0.0f, -0.525f, -0.525f}, 0.0f, MAT_CUBE4);
-        addBox(params, vec3f(0.05f, 0.05f, 0.1f), {-0.525f, 0.525f, 0.0f}, 0.0f, MAT_CUBE1);
-        addBox(params, vec3f(0.05f, 0.1f, 0.05f), {-0.525f, 0.0f, 0.525f}, 0.0f, MAT_CUBE5);
-        addBox(params, vec3f(0.1f, 0.05f, 0.05f), {0.0f, -0.525f, 0.525f}, 0.0f, MAT_CUBE2);*/
+        models.emplace_back(new ModelCuboid(vec3f(0.05f, 0.05f, 0.1f), {0.525f, 0.525f, 0.0f}, 0.0f, MAT_CUBE1));
+        models.emplace_back(new ModelCuboid(vec3f(0.05f, 0.1f, 0.05f), {0.525f, 0.0f, 0.525f}, 0.0f, MAT_CUBE3));
+        models.emplace_back(new ModelCuboid(vec3f(0.1f, 0.05f, 0.05f), {0.0f, 0.525f, 0.525f}, 0.0f, MAT_CUBE2));
+        models.emplace_back(new ModelCuboid(vec3f(0.05f, 0.05f, 0.1f), {0.525f, -0.525f, 0.0f}, 0.0f, MAT_CUBE6));
+        models.emplace_back(new ModelCuboid(vec3f(0.05f, 0.1f, 0.05f), {0.525f, 0.0f, -0.525f}, 0.0f, MAT_CUBE3));
+        models.emplace_back(new ModelCuboid(vec3f(0.1f, 0.05f, 0.05f), {0.0f, 0.525f, -0.525f}, 0.0f, MAT_CUBE4));
+        models.emplace_back(new ModelCuboid(vec3f(0.05f, 0.05f, 0.1f), {-0.525f, -0.525f, 0.0f}, 0.0f, MAT_CUBE6));
+        models.emplace_back(new ModelCuboid(vec3f(0.05f, 0.1f, 0.05f), {-0.525f, 0.0f, -0.525f}, 0.0f, MAT_CUBE5));
+        models.emplace_back(new ModelCuboid(vec3f(0.1f, 0.05f, 0.05f), {0.0f, -0.525f, -0.525f}, 0.0f, MAT_CUBE4));
+        models.emplace_back(new ModelCuboid(vec3f(0.05f, 0.05f, 0.1f), {-0.525f, 0.525f, 0.0f}, 0.0f, MAT_CUBE1));
+        models.emplace_back(new ModelCuboid(vec3f(0.05f, 0.1f, 0.05f), {-0.525f, 0.0f, 0.525f}, 0.0f, MAT_CUBE5));
+        models.emplace_back(new ModelCuboid(vec3f(0.1f, 0.05f, 0.05f), {0.0f, -0.525f, 0.525f}, 0.0f, MAT_CUBE2));
     }
 
     vec3f getCameraDynamicLocation(float timer) const override {

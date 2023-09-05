@@ -28,10 +28,12 @@ RayTracerHost::RayTracerHost() {
     std::vector<Material> materials;
     int triangleOffset = 0;
     for(std::shared_ptr<Model> model : models){
-        for(int i = 0; i < model->numVertices(); i++) vertices.push_back(model->getVertices()[i]);
-        for(int i = 0; i < model->numTriangles(); i++) triangles.push_back(model->getTriangles()[i] + triangleOffset);
-        materials.push_back(model->getMaterial());
-        triangleOffset += model->numVertices();
+        for(int i = 0; i < model->getNumVertices(); i++) vertices.push_back(model->getVertices()[i]);
+        for(int i = 0; i < model->getNumTriangles(); i++){
+            triangles.push_back(model->getTriangles()[i] + triangleOffset);
+            materials.push_back(model->getMaterial());
+        }
+        triangleOffset += model->getNumVertices();
     }
 
     // Initialize OWL data structures and parameters with our world geometry and materials
@@ -85,8 +87,6 @@ RayTracerHost::RayTracerHost() {
 
 void RayTracerHost::updateCamera(vec3f cameraLocation, vec3f cameraTarget) {
     // Calculate camera parameters
-    if(timerFreeze > 0.0f) cameraLocation += vec3f(0.0f, 10.0f, 0.0f);
-
     vec3f cameraDir = normalize(cameraTarget - cameraLocation);
     float aspect = (float)display::getSize().x / (float)display::getSize().y;
     vec3f cameraDirRight = CAMERA_COS_FOVY * aspect * normalize(cross(cameraDir, CAMERA_LOOK_UP));
@@ -106,7 +106,7 @@ void RayTracerHost::update(float delta) {
     if(timerFreeze > 0.0f) timerFreeze -= delta;
     else timer += delta / (2.0f * 4.0f);
 
-    updateCamera(SCENE_LIST[SCENE_INDEX]->getCameraDynamicLocation(timer),
+    updateCamera(SCENE_LIST[SCENE_INDEX]->getCameraDynamicLocation(timer) + (timerFreeze > 0.0f ? vec3f(0.0f, 10.0f, 0.0f) : vec3f(0.0f)),
                  SCENE_LIST[SCENE_INDEX]->getCameraDynamicTarget(timer));
 
     // Run ray tracer

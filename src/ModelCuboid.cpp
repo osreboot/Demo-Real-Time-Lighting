@@ -49,10 +49,10 @@ ModelCuboid::~ModelCuboid() {
     delete[] triangles;
 }
 
-int ModelCuboid::numVertices() const {
+int ModelCuboid::getNumVertices() const {
     return UNIT_BOX_NUM_VERTICES;
 }
 
-int ModelCuboid::numTriangles() const {
+int ModelCuboid::getNumTriangles() const {
     return UNIT_BOX_NUM_TRIANGLES;
 }

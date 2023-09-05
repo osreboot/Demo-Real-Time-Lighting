@@ -13,6 +13,7 @@ struct Material {
     float reflectivity; // Probability to reflect instead of absorb
     float diffuse; // Scattering magnitude
     owl::vec3f color; // Surface color
+    float gloss = 0.0f;
 };
 
 // Raw geometry data

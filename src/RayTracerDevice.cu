@@ -62,7 +62,7 @@ OPTIX_RAYGEN_PROGRAM(rayGenProgram)() {
         ray.direction = normalize(rayGen.camera.originPixel + screen.u * rayGen.camera.dirRight + screen.v * rayGen.camera.dirUp);
 
         // Trace the ray's path
-        vec3f colorOut = tracePath(rayGen, ray, prd);
+        vec3f colorOut = tracePath(rayGen, ray, prd) * PROGRAM_EXPOSURE_FACTOR;
 
         // Clamp the output color
         colorOut.x = max(min(colorOut.x, 1.0f), 0.0f);
@@ -84,7 +84,8 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)() {
     // Fetch data about the collision surface
     const unsigned int indexPrimitive = optixGetPrimitiveIndex();
     const vec3i index = world.triangles[indexPrimitive];
-    const Material& material = world.materials[indexPrimitive / 12];
+    const Material& material = world.materials[indexPrimitive];
+    // TODO This is probably really inefficient (each triangle requires the memory for a full material)
 
     // Calculate the normal of the surface
     const vec3f normalSurface = normalize(cross(world.vertices[index.y] - world.vertices[index.x],
@@ -170,7 +171,9 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)() {
     if(!continuousObject) prd.bounceDirection += material.diffuse * randomUnitSphere(prd.random);
 #endif
 
-    prd.color = continuousObject ? vec3f(1.0f) : material.color;
+    bool glossyBounce = material.gloss > 0.0f && prd.random() < material.gloss;
+
+    prd.color = continuousObject || glossyBounce ? vec3f(1.0f) : material.color;
 
 #if SHADER_FULLBRIGHT_MATERIALS
     prd.hitDetected = !material.fullbright;

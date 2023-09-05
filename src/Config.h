@@ -9,8 +9,8 @@
 #define SCENE_SKYBOX_NIGHT 4
 
 // Select the current scene and skybox
-#define SCENE_INDEX 0
-#define SCENE_SKYBOX SCENE_SKYBOX_UNDERLIT
+#define SCENE_INDEX 7
+#define SCENE_SKYBOX SCENE_SKYBOX_WHITE
 
 extern const Scene* SCENE_LIST[];
 
@@ -18,7 +18,9 @@ extern const Scene* SCENE_LIST[];
 #define PROGRAM_MODE_DYNAMIC 1
 
 // Number of raycasts per pixel
-#define PROGRAM_SAMPLES 10
+#define PROGRAM_SAMPLES 40
+
+#define PROGRAM_EXPOSURE_FACTOR 1.0f
 
 // Disable specific shader features for demonstration purposes
 #define SHADER_SKYBOX_DIRECTIONAL 1

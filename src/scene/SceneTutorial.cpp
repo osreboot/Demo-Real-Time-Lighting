@@ -1,5 +1,6 @@
 
 #include "Scene.h"
+#include "ModelCuboid.h"
 
 using namespace owl;
 
@@ -16,18 +17,18 @@ private:
 
 public:
     // Demonstration scene that is as simple as possible (while still having each type of material).
-    void build(std::vector<std::shared_ptr<Model>>& models) const override {/*
+    void build(std::vector<std::shared_ptr<Model>>& models) const override {
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 0.5f){
             for(float z = -5.0f; z <= 5.0f; z += 0.5f){
-                addBox(params, vec3f(0.25f), {x, -0.25f, z}, 0.0f, indexTile++ % 2 == 0 ? MAT_BASE1 : MAT_BASE2);
+                models.emplace_back(new ModelCuboid(vec3f(0.25f), {x, -0.25f, z}, 0.0f, indexTile++ % 2 == 0 ? MAT_BASE1 : MAT_BASE2));
             }
         }
 
-        addBox(params, vec3f(0.5f), {-1.8f, 0.6f, 0.0f}, 0.0f, MAT_LAMBERT);
-        addBox(params, vec3f(0.5f), {-0.6f, 0.6f, 0.0f}, 0.0f, MAT_LIGHT);
-        addBox(params, vec3f(0.5f), {0.6f, 0.6f, 0.0f}, 0.0f, MAT_GLASS);
-        addBox(params, vec3f(0.5f), {1.8f, 0.6f, 0.0f}, 0.0f, MAT_CHROME);*/
+        models.emplace_back(new ModelCuboid(vec3f(0.5f), {-1.8f, 0.6f, 0.0f}, 0.0f, MAT_LAMBERT));
+        models.emplace_back(new ModelCuboid(vec3f(0.5f), {-0.6f, 0.6f, 0.0f}, 0.0f, MAT_LIGHT));
+        models.emplace_back(new ModelCuboid(vec3f(0.5f), {0.6f, 0.6f, 0.0f}, 0.0f, MAT_GLASS));
+        models.emplace_back(new ModelCuboid(vec3f(0.5f), {1.8f, 0.6f, 0.0f}, 0.0f, MAT_CHROME));
     }
 
     vec3f getCameraDynamicLocation(float timer) const override {

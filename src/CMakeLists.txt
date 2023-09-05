@@ -7,11 +7,14 @@ target_sources(${PROJECT_NAME} PRIVATE
         Model.h
         ModelCuboid.cpp
         ModelCuboid.h
+        ModelObj.cpp
+        ModelObj.h
         RayTracerHost.cpp
         RayTracerHost.h
         scene/Scene.h
         scene/SceneBackground.cpp
         scene/SceneComposite.cpp
+        scene/SceneCustomModel.cpp
         scene/SceneDemo.cpp
         scene/SceneFarm.cpp
         scene/SceneId.cpp

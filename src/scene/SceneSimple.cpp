@@ -4,13 +4,13 @@
 
 using namespace owl;
 
-#define INDEX_MATERIAL0 3
-#define INDEX_MATERIAL1 4
-#define INDEX_MATERIAL2 4
-
 class SceneSimple : public Scene {
 
 private:
+    const int INDEX_MATERIAL0 = 3;
+    const int INDEX_MATERIAL1 = 4;
+    const int INDEX_MATERIAL2 = 4;
+
     const Material MAT_BASE1 = {false, 0.0f, 1.0f, 0.2f, 0.02f, {0.6, 0.6f, 0.6f}};
     const Material MAT_BASE2 = {false, 0.0f, 1.0f, 0.2f, 0.02f, {0.8f, 0.8f, 0.8f}};
 

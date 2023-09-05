@@ -1,5 +1,6 @@
 
 #include "Scene.h"
+#include "ModelCuboid.h"
 
 using namespace owl;
 
@@ -28,44 +29,43 @@ private:
     }
 
     // Creates a "farm" plot on the floor with a grid of cubes
-    /*
-    void addFarm(const SceneBuildParams &params, vec3f location) const {
-        addBox(params, {SIZE_FARM_BLOCK * 3.5f, 0.05f, SIZE_FARM_BLOCK * 3.5f},
+    void addFarm(std::vector<std::shared_ptr<Model>>& models, vec3f location) const {
+        models.emplace_back(new ModelCuboid({SIZE_FARM_BLOCK * 3.5f, 0.05f, SIZE_FARM_BLOCK * 3.5f},
                {location.x, location.y - 0.02f, location.z}, 0.0f,
-               getMaterial({location.x, location.z}, false));
+               getMaterial({location.x, location.z}, false)));
         for(float x = -SIZE_FARM_BLOCK * 3.0f; x <= SIZE_FARM_BLOCK * 3.0f; x += SIZE_FARM_BLOCK){
             for(float z = -SIZE_FARM_BLOCK * 3.0f; z <= SIZE_FARM_BLOCK * 3.0f; z += SIZE_FARM_BLOCK){
                 const float height = random() * SIZE_FARM_BLOCK / 4.0f;
-                addBox(params, {SIZE_FARM_BLOCK2, height, SIZE_FARM_BLOCK2},
+                models.emplace_back(new ModelCuboid({SIZE_FARM_BLOCK2, height, SIZE_FARM_BLOCK2},
                        {location.x + x, location.y + height, location.z + z}, 0.0f,
-                       getMaterial({location.x + x, location.z + z}, random() < 0.1f));
+                       getMaterial({location.x + x, location.z + z}, random() < 0.1f)));
             }
         }
-    }*/
+    }
 
 public:
 
     // This scene has a bunch of cube "farm" plots on the ground and reflective walls. Best used with a dark sky!
-    void build(std::vector<std::shared_ptr<Model>>& models) const override {/*
-        addBox(params, {9.0f, 0.05f, 7.0f}, {0.0f, -0.1f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY);
+    void build(std::vector<std::shared_ptr<Model>>& models) const override {
+        models.emplace_back(new ModelCuboid({9.0f, 0.05f, 7.0f}, {0.0f, -0.1f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY));
 
-        addBox(params, {9.0f, 3.0f, 0.05f}, {0.0f, 3.0f, 7.05f}, 0.0f, MAT_CHROME);
-        addBox(params, {9.0f, 3.0f, 0.05f}, {0.0f, 3.0f, -7.05f}, 0.0f, MAT_CHROME);
-        addBox(params, {0.05f, 3.0f, 7.0f}, {9.05f, 3.0f, 0.0f}, 0.0f, MAT_CHROME);
-        addBox(params, {0.05f, 3.0f, 7.0f}, {-9.05f, 3.0f, 0.0f}, 0.0f, MAT_CHROME);
+        models.emplace_back(new ModelCuboid({9.0f, 3.0f, 0.05f}, {0.0f, 3.0f, 7.05f}, 0.0f, MAT_CHROME));
+        models.emplace_back(new ModelCuboid({9.0f, 3.0f, 0.05f}, {0.0f, 3.0f, -7.05f}, 0.0f, MAT_CHROME));
+        models.emplace_back(new ModelCuboid({0.05f, 3.0f, 7.0f}, {9.05f, 3.0f, 0.0f}, 0.0f, MAT_CHROME));
+        models.emplace_back(new ModelCuboid({0.05f, 3.0f, 7.0f}, {-9.05f, 3.0f, 0.0f}, 0.0f, MAT_CHROME));
 
         for(float x = -1.0f; x <= 1.0f; x += 1.0f){
             for(float z = -1.0f; z <= 1.0f; z += 1.0f){
-                addFarm(params, {x * 4.0f, 0.0f, z * 4.0f});
+                addFarm(models, {x * 4.0f, 0.0f, z * 4.0f});
             }
         }
         for(float x = -5.5f; x <= 5.5f; x += SIZE_FARM_BLOCK){
             const float size = random() * SIZE_FARM_BLOCK;
-            addBox(params, {SIZE_FARM_BLOCK2, 3.0f, size}, {x, 3.0f, 7.0f - size}, 0.0f, MAT_CHROME);
-            addBox(params, {SIZE_FARM_BLOCK2, 3.0f, size}, {x, 3.0f, -7.0f + size}, 0.0f, MAT_CHROME);
+            models.emplace_back(new ModelCuboid({SIZE_FARM_BLOCK2, 3.0f, size}, {x, 3.0f, 7.0f - size}, 0.0f, MAT_CHROME));
+            models.emplace_back(new ModelCuboid({SIZE_FARM_BLOCK2, 3.0f, size}, {x, 3.0f, -7.0f + size}, 0.0f, MAT_CHROME));
         }
 
-        addBox(params, {1.0f, 1.0f, 1.0f}, {0.0f, 5.0f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY);*/
+        models.emplace_back(new ModelCuboid({1.0f, 1.0f, 1.0f}, {0.0f, 5.0f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY));
     }
 
     vec3f getCameraDynamicLocation(float timer) const override {
