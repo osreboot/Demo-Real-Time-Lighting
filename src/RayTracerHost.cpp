@@ -1,12 +1,11 @@
 
-#define CAMERA_COS_FOVY 0.9f // was 0.66f
+#define CAMERA_COS_FOVY 0.7f // wide = 0.9 | original = 0.66 | narrow = 0.5
 #define CAMERA_LOOK_UP vec3f{0.0f, 1.0f, 0.0f}
 
-#include <owl/owl.h>
 #include <vector>
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb/stb_image_write.h"
+#include <owl/owl.h>
+#include <stb/stb_image_write.h>
 
 #include "Config.h"
 #include "Display.h"
@@ -16,51 +15,71 @@
 using namespace owl;
 
 RayTracerHost::RayTracerHost() {
+    // Initialize OWL context so we can start loading resources
+    context = owlContextCreate(nullptr, 1);
+    OWLModule module = owlModuleCreate(context, RayTracerDevice_ptx);
+
     // Fetch scene data
+    std::cout << "Building scene..." << std::endl;
     const Scene& scene = *SCENE_LIST[SCENE_INDEX];
     std::vector<std::shared_ptr<Model>> models;
-    scene.build(models);
+    std::vector<OWLTexture> textures;
+    scene.build(context, models, textures);
 
     // Extract vertex, triangle, and texture/material data from scene models
     // TODO This could be optimized by using primitive arrays instead of vectors
+    std::cout << "Initializing geometry..." << std::endl;
     std::vector<vec3f> vertices;
     std::vector<vec3i> triangles;
+    std::vector<vec2f> textureCoords;
+    std::vector<int> materialIndices;
     std::vector<Material> materials;
     int triangleOffset = 0;
     for(std::shared_ptr<Model> model : models){
         for(int i = 0; i < model->getNumVertices(); i++) vertices.push_back(model->getVertices()[i]);
         for(int i = 0; i < model->getNumTriangles(); i++){
             triangles.push_back(model->getTriangles()[i] + triangleOffset);
-            materials.push_back(model->getMaterial());
+            textureCoords.push_back(model->getTextureCoords()[i * 3]);
+            textureCoords.push_back(model->getTextureCoords()[i * 3 + 1]);
+            textureCoords.push_back(model->getTextureCoords()[i * 3 + 2]);
+            materialIndices.push_back((int)materials.size());
         }
+        materials.push_back(model->getMaterial());
         triangleOffset += model->getNumVertices();
     }
 
     // Initialize OWL data structures and parameters with our world geometry and materials
-    context = owlContextCreate(nullptr, 1);
-    OWLModule module = owlModuleCreate(context, RayTracerDevice_ptx);
-
     OWLVarDecl trianglesGeomVars[] = {
             {"vertices", OWL_BUFPTR, OWL_OFFSETOF(WorldGeometry, vertices)},
             {"triangles", OWL_BUFPTR, OWL_OFFSETOF(WorldGeometry, triangles)},
-            {"materials", OWL_BUFPTR, OWL_OFFSETOF(WorldGeometry, materials)}
+            {"textureCoords", OWL_BUFPTR, OWL_OFFSETOF(WorldGeometry, textureCoords)},
+            {"materialIndices", OWL_BUFPTR, OWL_OFFSETOF(WorldGeometry, materialIndices)},
+            {"materials", OWL_BUFPTR, OWL_OFFSETOF(WorldGeometry, materials)},
+            {"textures", OWL_BUFPTR, OWL_OFFSETOF(WorldGeometry, textures)},
+            {nullptr}
     };
-    OWLGeomType trianglesGeomType = owlGeomTypeCreate(context, OWL_TRIANGLES, sizeof(WorldGeometry), trianglesGeomVars, 3);
+    OWLGeomType trianglesGeomType = owlGeomTypeCreate(context, OWL_TRIANGLES, sizeof(WorldGeometry), trianglesGeomVars, -1);
     owlGeomTypeSetClosestHit(trianglesGeomType, 0, module, "TriangleMesh");
 
     OWLBuffer vertexBuffer = owlDeviceBufferCreate(context, OWL_FLOAT3, vertices.size(), vertices.data());
     OWLBuffer triangleBuffer = owlDeviceBufferCreate(context, OWL_INT3, triangles.size(), triangles.data());
+    OWLBuffer textureCoordBuffer = owlDeviceBufferCreate(context, OWL_FLOAT2, textureCoords.size(), textureCoords.data());
+    OWLBuffer materialIndicesBuffer = owlDeviceBufferCreate(context, OWL_INT, materialIndices.size(), materialIndices.data());
     OWLBuffer materialBuffer = owlDeviceBufferCreate(context, OWL_USER_TYPE(materials[0]), materials.size(), materials.data());
+    OWLBuffer textureBuffer = owlDeviceBufferCreate(context, OWL_TEXTURE, textures.size(), textures.data());
 
-    OWLGeom trianglesGeom = owlGeomCreate(context, trianglesGeomType);
-    owlTrianglesSetVertices(trianglesGeom, vertexBuffer, vertices.size(), sizeof(vertices[0]), 0);
-    owlTrianglesSetIndices(trianglesGeom, triangleBuffer, triangles.size(), sizeof(triangles[0]), 0);
+    OWLGeom worldGeometry = owlGeomCreate(context, trianglesGeomType);
+    owlTrianglesSetVertices(worldGeometry, vertexBuffer, vertices.size(), sizeof(vertices[0]), 0);
+    owlTrianglesSetIndices(worldGeometry, triangleBuffer, triangles.size(), sizeof(triangles[0]), 0);
 
-    owlGeomSetBuffer(trianglesGeom, "vertices", vertexBuffer);
-    owlGeomSetBuffer(trianglesGeom, "triangles", triangleBuffer);
-    owlGeomSetBuffer(trianglesGeom, "materials", materialBuffer);
+    owlGeomSetBuffer(worldGeometry, "vertices", vertexBuffer);
+    owlGeomSetBuffer(worldGeometry, "triangles", triangleBuffer);
+    owlGeomSetBuffer(worldGeometry, "textureCoords", textureCoordBuffer);
+    owlGeomSetBuffer(worldGeometry, "materialIndices", materialIndicesBuffer);
+    owlGeomSetBuffer(worldGeometry, "materials", materialBuffer);
+    owlGeomSetBuffer(worldGeometry, "textures", textureBuffer);
 
-    OWLGroup trianglesGroup = owlTrianglesGeomGroupCreate(context, 1, &trianglesGeom);
+    OWLGroup trianglesGroup = owlTrianglesGeomGroupCreate(context, 1, &worldGeometry);
     owlGroupBuildAccel(trianglesGroup);
     OWLGroup worldGroup = owlInstanceGroupCreate(context, 1, &trianglesGroup);
     owlGroupBuildAccel(worldGroup);
@@ -83,6 +102,8 @@ RayTracerHost::RayTracerHost() {
     // Build everything
     owlBuildPrograms(context);
     owlBuildPipeline(context);
+
+    std::cout << "Launching program..." << std::endl;
 }
 
 void RayTracerHost::updateCamera(vec3f cameraLocation, vec3f cameraTarget) {

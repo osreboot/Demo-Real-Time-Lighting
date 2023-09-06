@@ -84,8 +84,8 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)() {
     // Fetch data about the collision surface
     const unsigned int indexPrimitive = optixGetPrimitiveIndex();
     const vec3i index = world.triangles[indexPrimitive];
-    const Material& material = world.materials[indexPrimitive];
-    // TODO This is probably really inefficient (each triangle requires the memory for a full material)
+    const int indexMaterial = world.materialIndices[indexPrimitive];
+    const Material& material = world.materials[indexMaterial];
 
     // Calculate the normal of the surface
     const vec3f normalSurface = normalize(cross(world.vertices[index.y] - world.vertices[index.x],
@@ -117,8 +117,10 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)() {
     const Material materialAir = {false, 1.0f, 1.0f, 0.0f, 0.0f, vec3f(1.0f)};
 
     const bool leavingObject = dot(rdn, normalSurface) > 0.0f;
-    Material materialLast = leavingObject ? material : (prd.sizeMaterials > 0 ? prd.materials[prd.sizeMaterials - 1] : materialAir);
-    Material materialNext = leavingObject ? (prd.sizeMaterials > 1 ? prd.materials[prd.sizeMaterials - 2] : materialAir) : material;
+    Material materialLast = leavingObject ? material : (prd.sizeMaterials > 0 ?
+            world.materials[prd.nestedMaterials[prd.sizeMaterials - 1]] : materialAir);
+    Material materialNext = leavingObject ? (prd.sizeMaterials > 1 ?
+            world.materials[prd.nestedMaterials[prd.sizeMaterials - 2]] : materialAir) : material;
 
     const bool continuousObject = prd.sizeMaterials > 0 &&
             materialLast.fullbright == materialNext.fullbright &&
@@ -161,7 +163,7 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)() {
         if(leavingObject){
             if(prd.sizeMaterials > 0) prd.sizeMaterials--;
         }else{
-            if(prd.sizeMaterials < NESTED_MATERIALS_MAX) prd.materials[prd.sizeMaterials++] = material;
+            if(prd.sizeMaterials < NESTED_MATERIALS_MAX) prd.nestedMaterials[prd.sizeMaterials++] = indexMaterial;
         }
         prd.bounceDirection = directionRefract;
     }else prd.bounceDirection = directionReflect;
@@ -173,7 +175,13 @@ OPTIX_CLOSEST_HIT_PROGRAM(TriangleMesh)() {
 
     bool glossyBounce = material.gloss > 0.0f && prd.random() < material.gloss;
 
-    prd.color = continuousObject || glossyBounce ? vec3f(1.0f) : material.color;
+    vec2f uv = optixGetTriangleBarycentrics();
+    vec2f textureCoord = (1.0f - uv.x - uv.y) * world.textureCoords[indexPrimitive * 3] +
+            uv.x * world.textureCoords[indexPrimitive * 3 + 1] +
+            uv.y * world.textureCoords[indexPrimitive * 3 + 2];
+    vec3f colorTexture = material.textureDiffuse > -1 ? vec3f(tex2D<float4>(world.textures[material.textureDiffuse], textureCoord.x, 1.0f - textureCoord.y)) : vec3f(1.0f);
+
+    prd.color = continuousObject || glossyBounce ? vec3f(1.0f) : (material.color * colorTexture);
 
 #if SHADER_FULLBRIGHT_MATERIALS
     prd.hitDetected = !material.fullbright;

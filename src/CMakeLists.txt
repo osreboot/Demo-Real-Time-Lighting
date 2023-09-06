@@ -11,6 +11,7 @@ target_sources(${PROJECT_NAME} PRIVATE
         ModelObj.h
         RayTracerHost.cpp
         RayTracerHost.h
+        StbImpl.cpp
         scene/Scene.h
         scene/SceneBackground.cpp
         scene/SceneComposite.cpp

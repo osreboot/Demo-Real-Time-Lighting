@@ -17,7 +17,8 @@ private:
 
 public:
     // Demonstration scene that is as simple as possible (while still having each type of material).
-    void build(std::vector<std::shared_ptr<Model>>& models) const override {
+    void build(OWLContext context, std::vector<std::shared_ptr<Model>>& models,
+               std::vector<OWLTexture>& textures) const override {
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 0.5f){
             for(float z = -5.0f; z <= 5.0f; z += 0.5f){

@@ -2,6 +2,7 @@
 
 #include <owl/owl.h>
 #include <owl/common/math/random.h>
+#include <cuda_runtime.h>
 
 #define NESTED_MATERIALS_MAX 50
 
@@ -14,13 +15,17 @@ struct Material {
     float diffuse; // Scattering magnitude
     owl::vec3f color; // Surface color
     float gloss = 0.0f;
+    int textureDiffuse = -1;
 };
 
 // Raw geometry data
 struct WorldGeometry {
     owl::vec3f* vertices;
     owl::vec3i* triangles;
+    owl::vec2f* textureCoords;
+    int* materialIndices;
     Material* materials;
+    cudaTextureObject_t* textures;
 };
 
 // Data used by the ray generator
@@ -53,5 +58,5 @@ struct PerRayData {
     // Material stack, used to track the material that the ray is currently inside. Also used to calculate the relative
     // refractive index when transitioning between materials.
     int sizeMaterials;
-    Material materials[NESTED_MATERIALS_MAX];
+    int nestedMaterials[NESTED_MATERIALS_MAX];
 };

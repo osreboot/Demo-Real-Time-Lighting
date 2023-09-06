@@ -30,6 +30,7 @@ const vec3i UNIT_BOX_TRIANGLES[UNIT_BOX_NUM_TRIANGLES] = {
 ModelCuboid::ModelCuboid(vec3f scale, vec3f location, float yRotation, Material material) :
     vertices(new vec3f[UNIT_BOX_NUM_VERTICES]),
     triangles(new vec3i[UNIT_BOX_NUM_TRIANGLES]),
+    textureCoords(new vec2f[UNIT_BOX_NUM_TRIANGLES * 3]),
     material(std::move(material)) {
 
     affine3f transform(linear3f::scale(scale));
@@ -41,12 +42,16 @@ ModelCuboid::ModelCuboid(vec3f scale, vec3f location, float yRotation, Material 
     }
     for(int i = 0; i < UNIT_BOX_NUM_TRIANGLES; i++){
         triangles[i] = UNIT_BOX_TRIANGLES[i];
+        textureCoords[i * 3] = {0.0f, 0.0f};
+        textureCoords[i * 3 + 1] = {0.0f, 0.0f};
+        textureCoords[i * 3 + 2] = {0.0f, 0.0f};
     }
 }
 
 ModelCuboid::~ModelCuboid() {
     delete[] vertices;
     delete[] triangles;
+    delete[] textureCoords;
 }
 
 int ModelCuboid::getNumVertices() const {

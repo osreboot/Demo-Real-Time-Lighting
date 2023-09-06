@@ -22,6 +22,11 @@ There are several parts to this project:
 The `scene` folder contains a number of scene definitions that, when selected in the configuration file, each generate unique arrangements of world geometries and materials.
 
 # Examples
+*Custom Model* scene rendered at 20,000 samples per pixel. Gecko modeled by Andreasstrom and available on [TurboSquid](https://www.turbosquid.com/3d-models/gecko-rig-model-1181653). 
+<p align="center">
+  <img src="https://github.com/osreboot/Demo-Real-Time-Lighting/blob/main/examples/exampleSceneCustomModel.png" alt="Custom Model Scene">
+</p>
+
 *Tutorial* scene rendered at 20,000 samples per pixel.
 <p align="center">
   <img src="https://github.com/osreboot/Demo-Real-Time-Lighting/blob/main/examples/exampleSceneTutorial.png" alt="Tutorial Scene">
@@ -30,9 +35,4 @@ The `scene` folder contains a number of scene definitions that, when selected in
 *Farm* scene rendered at 20,000 samples per pixel.
 <p align="center">
   <img src="https://github.com/osreboot/Demo-Real-Time-Lighting/blob/main/examples/exampleSceneFarm.png" alt="Farm Scene">
-</p>
-
-*Background* scene rendered at 20,000 samples per pixel.
-<p align="center">
-  <img src="https://github.com/osreboot/Demo-Real-Time-Lighting/blob/main/examples/exampleSceneBackground.png" alt="Background Scene">
 </p>

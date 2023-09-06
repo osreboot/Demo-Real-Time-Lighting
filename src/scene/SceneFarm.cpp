@@ -46,7 +46,8 @@ private:
 public:
 
     // This scene has a bunch of cube "farm" plots on the ground and reflective walls. Best used with a dark sky!
-    void build(std::vector<std::shared_ptr<Model>>& models) const override {
+    void build(OWLContext context, std::vector<std::shared_ptr<Model>>& models,
+               std::vector<OWLTexture>& textures) const override {
         models.emplace_back(new ModelCuboid({9.0f, 0.05f, 7.0f}, {0.0f, -0.1f, 0.0f}, 0.0f, MAT_LIGHT_PRIMARY));
 
         models.emplace_back(new ModelCuboid({9.0f, 3.0f, 0.05f}, {0.0f, 3.0f, 7.05f}, 0.0f, MAT_CHROME));

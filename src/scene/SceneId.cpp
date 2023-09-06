@@ -17,7 +17,8 @@ private:
 public:
 
     // This scene renders my (Calvin Weaver) student ID in big reflective letters with an interesting dual material tiled floor.
-    void build(std::vector<std::shared_ptr<Model>>& models) const override {
+    void build(OWLContext context, std::vector<std::shared_ptr<Model>>& models,
+               std::vector<OWLTexture>& textures) const override {
         int indexTile = 0;
         for(float x = -5.0f; x <= 5.0f; x += 1.0f){
             for(float z = -5.0f; z <= 5.0f; z += 1.0f){
