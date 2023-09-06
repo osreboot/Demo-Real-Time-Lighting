@@ -1,5 +1,5 @@
 
-#define CAMERA_COS_FOVY 0.7f // wide = 0.9 | original = 0.66 | narrow = 0.5
+#define CAMERA_COS_FOVY 0.8f // wide = 0.9 | original = 0.66 | narrow = 0.5
 #define CAMERA_LOOK_UP vec3f{0.0f, 1.0f, 0.0f}
 
 #include <vector>

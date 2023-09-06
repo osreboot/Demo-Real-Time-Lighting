@@ -10,7 +10,7 @@
 
 // Select the current scene and skybox
 #define SCENE_INDEX 7
-#define SCENE_SKYBOX 0
+#define SCENE_SKYBOX 1
 
 extern const Scene* SCENE_LIST[];
 
